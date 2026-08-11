@@ -1,0 +1,15 @@
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\bin\Debug\net9.0\BasePlate.Infrastructure.deps.json
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\bin\Debug\net9.0\BasePlate.Infrastructure.dll
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\bin\Debug\net9.0\BasePlate.Infrastructure.pdb
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\bin\Debug\net9.0\BasePlate.Core.dll
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\bin\Debug\net9.0\BasePlate.Core.pdb
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\net9.0\BasePlate.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\net9.0\BasePlate.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\net9.0\BasePlate.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\net9.0\BasePlate.Infrastructure.AssemblyInfo.cs
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\net9.0\BasePlate.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\net9.0\BasePlat.4E0FE18F.Up2Date
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\net9.0\BasePlate.Infrastructure.dll
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\net9.0\refint\BasePlate.Infrastructure.dll
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\net9.0\BasePlate.Infrastructure.pdb
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\net9.0\ref\BasePlate.Infrastructure.dll

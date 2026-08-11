@@ -1,0 +1,11 @@
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\bin\Debug\net9.0\BasePlate.Core.deps.json
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\bin\Debug\net9.0\BasePlate.Core.dll
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\bin\Debug\net9.0\BasePlate.Core.pdb
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\obj\Debug\net9.0\BasePlate.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\obj\Debug\net9.0\BasePlate.Core.AssemblyInfoInputs.cache
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\obj\Debug\net9.0\BasePlate.Core.AssemblyInfo.cs
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\obj\Debug\net9.0\BasePlate.Core.csproj.CoreCompileInputs.cache
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\obj\Debug\net9.0\BasePlate.Core.dll
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\obj\Debug\net9.0\refint\BasePlate.Core.dll
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\obj\Debug\net9.0\BasePlate.Core.pdb
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\obj\Debug\net9.0\ref\BasePlate.Core.dll

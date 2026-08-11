@@ -1,0 +1,6 @@
+@BasePlate.Api_HostAddress = http://localhost:5147
+
+GET {{BasePlate.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
