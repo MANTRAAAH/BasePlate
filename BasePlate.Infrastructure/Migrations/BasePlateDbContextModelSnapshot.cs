@@ -112,6 +112,16 @@ namespace BasePlate.Infrastructure.Migrations
                     b.Property<int>("CategoriaId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Descrizione")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ImmagineUrl")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("IngredienteId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("text");
@@ -129,9 +139,41 @@ namespace BasePlate.Infrastructure.Migrations
 
                     b.HasIndex("CategoriaId");
 
+                    b.HasIndex("IngredienteId");
+
                     b.HasIndex("TipologiaCotturaId");
 
                     b.ToTable("Prodotti");
+                });
+
+            modelBuilder.Entity("BasePlate.Core.Entities.ProdottoAllergene", b =>
+                {
+                    b.Property<int>("ProdottoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AllergeneId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ProdottoId", "AllergeneId");
+
+                    b.HasIndex("AllergeneId");
+
+                    b.ToTable("ProdottoAllergene");
+                });
+
+            modelBuilder.Entity("BasePlate.Core.Entities.ProdottoIngrediente", b =>
+                {
+                    b.Property<int>("ProdottoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("IngredienteId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ProdottoId", "IngredienteId");
+
+                    b.HasIndex("IngredienteId");
+
+                    b.ToTable("ProdottoIngrediente");
                 });
 
             modelBuilder.Entity("BasePlate.Core.Entities.TipologiaCottura", b =>
@@ -158,21 +200,6 @@ namespace BasePlate.Infrastructure.Migrations
                     b.ToTable("TipologieCottura");
                 });
 
-            modelBuilder.Entity("IngredienteProdotto", b =>
-                {
-                    b.Property<int>("IngredientiId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ProdottiId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("IngredientiId", "ProdottiId");
-
-                    b.HasIndex("ProdottiId");
-
-                    b.ToTable("IngredienteProdotto");
-                });
-
             modelBuilder.Entity("AllergeneIngrediente", b =>
                 {
                     b.HasOne("BasePlate.Core.Entities.Allergene", null)
@@ -196,33 +223,70 @@ namespace BasePlate.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BasePlate.Core.Entities.TipologiaCottura", "TipologiaCottura")
+                    b.HasOne("BasePlate.Core.Entities.Ingrediente", null)
+                        .WithMany("Prodotti")
+                        .HasForeignKey("IngredienteId");
+
+                    b.HasOne("BasePlate.Core.Entities.TipologiaCottura", null)
                         .WithMany("Prodotti")
                         .HasForeignKey("TipologiaCotturaId");
 
                     b.Navigation("Categoria");
-
-                    b.Navigation("TipologiaCottura");
                 });
 
-            modelBuilder.Entity("IngredienteProdotto", b =>
+            modelBuilder.Entity("BasePlate.Core.Entities.ProdottoAllergene", b =>
                 {
-                    b.HasOne("BasePlate.Core.Entities.Ingrediente", null)
+                    b.HasOne("BasePlate.Core.Entities.Allergene", "Allergene")
                         .WithMany()
-                        .HasForeignKey("IngredientiId")
+                        .HasForeignKey("AllergeneId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BasePlate.Core.Entities.Prodotto", null)
-                        .WithMany()
-                        .HasForeignKey("ProdottiId")
+                    b.HasOne("BasePlate.Core.Entities.Prodotto", "Prodotto")
+                        .WithMany("Allergeni")
+                        .HasForeignKey("ProdottoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Allergene");
+
+                    b.Navigation("Prodotto");
+                });
+
+            modelBuilder.Entity("BasePlate.Core.Entities.ProdottoIngrediente", b =>
+                {
+                    b.HasOne("BasePlate.Core.Entities.Ingrediente", "Ingrediente")
+                        .WithMany()
+                        .HasForeignKey("IngredienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BasePlate.Core.Entities.Prodotto", "Prodotto")
+                        .WithMany("Ingredienti")
+                        .HasForeignKey("ProdottoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ingrediente");
+
+                    b.Navigation("Prodotto");
                 });
 
             modelBuilder.Entity("BasePlate.Core.Entities.Categoria", b =>
                 {
                     b.Navigation("Prodotti");
+                });
+
+            modelBuilder.Entity("BasePlate.Core.Entities.Ingrediente", b =>
+                {
+                    b.Navigation("Prodotti");
+                });
+
+            modelBuilder.Entity("BasePlate.Core.Entities.Prodotto", b =>
+                {
+                    b.Navigation("Allergeni");
+
+                    b.Navigation("Ingredienti");
                 });
 
             modelBuilder.Entity("BasePlate.Core.Entities.TipologiaCottura", b =>

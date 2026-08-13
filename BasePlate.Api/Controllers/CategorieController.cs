@@ -1,3 +1,4 @@
+using BasePlate.Core.DTOs.Prodotti; // 📦 Importiamo i nuovi DTO ordinati
 using BasePlate.Core.Entities;
 using BasePlate.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -20,37 +21,38 @@ public class CategorieController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetCategorie()
     {
-        // 🛡️ MAGIA MULTI-TENANT IN AZIONE:
-        // Non c'è alcun ".Where(c => c.TenantId == x)". 
-        // Interroghiamo tutta la tabella, ma EF Core applicherà in automatico 
-        // il filtro invisibile per restituire SOLO le categorie di questo locale.
-        var categorie = await _context.Categorie.ToListAsync();
+        // 🛡️ Mappiamo direttamente l'entità al ReadDto per non esporre dettagli interni
+        var categorie = await _context.Categorie
+            .Select(c => new CategoriaReadDto
+            {
+                Id = c.Id,
+                Nome = c.Nome
+            })
+            .ToListAsync();
 
         return Ok(categorie);
     }
 
     // POST: api/categorie
     [HttpPost]
-    public async Task<IActionResult> CreaCategoria([FromBody] CategoriaDto request)
+    public async Task<IActionResult> CreaCategoria([FromBody] CreaCategoriaDto request)
     {
         var nuovaCategoria = new Categoria
         {
             Nome = request.Nome
-            // 🛡️ ALTRA MAGIA: Non stiamo assegnando il TenantId qui.
+            // 🛡️ Il TenantId viene iniettato automaticamente dal DbContext/Interceptors
         };
 
         _context.Categorie.Add(nuovaCategoria);
-
-        // Il DbContext intercetterà il salvataggio e inietterà il TenantId corretto
-        // pescato dal nostro "CurrentTenantProvider" prima di scrivere su PostgreSQL.
         await _context.SaveChangesAsync();
 
-        return Ok(nuovaCategoria);
-    }
-}
+        // Restituiamo il DTO di lettura pulito anziché l'entità grezza del database
+        var responseDto = new CategoriaReadDto
+        {
+            Id = nuovaCategoria.Id,
+            Nome = nuovaCategoria.Nome
+        };
 
-// Data Transfer Object (DTO) per ricevere solo i dati necessari dal client
-public class CategoriaDto
-{
-    public string Nome { get; set; } = string.Empty;
+        return CreatedAtAction(nameof(GetCategorie), new { id = responseDto.Id }, responseDto);
+    }
 }

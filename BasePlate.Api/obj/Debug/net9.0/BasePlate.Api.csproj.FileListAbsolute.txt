@@ -122,6 +122,5 @@ C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Api\obj\Debug\net9.0\refint
 C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Api\obj\Debug\net9.0\BasePlate.Api.pdb
 C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Api\obj\Debug\net9.0\BasePlate.Api.genruntimeconfig.cache
 C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Api\obj\Debug\net9.0\ref\BasePlate.Api.dll
-C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
-C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Api\bin\Debug\net9.0\Scalar.AspNetCore.dll
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Api\obj\Debug\net9.0\BasePlate.Api.sourcelink.json

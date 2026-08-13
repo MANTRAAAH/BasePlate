@@ -2,6 +2,7 @@ using BasePlate.Api.Services;
 using BasePlate.Core.Interfaces;
 using BasePlate.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore; // <-- Nuova libreria UI
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,17 +18,33 @@ builder.Services.AddDbContext<BasePlateDbContext>(options =>
 // Aggiungiamo i controller e Swagger (standard web api)
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// 🟢 NATIVE .NET 9 OPENAPI (Sostituisce AddSwaggerGen)
+builder.Services.AddOpenApi();
+// ... altri servizi (es. AddControllers, AddDbContext)
+
+// 🔓 Aggiungiamo la policy CORS per Angular
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") // L'indirizzo del server di sviluppo Angular
+              .AllowAnyHeader()  // Permette qualsiasi intestazione (incluso il futuro token JWT)
+              .AllowAnyMethod(); // Permette GET, POST, PUT, DELETE, ecc.
+    });
+});
 
 var app = builder.Build();
 
 // Configurazione della pipeline HTTP
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    // 🟢 NATIVE .NET 9 UI (Sostituisce UseSwagger e UseSwaggerUI)
+    app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
+
+app.UseCors("AllowAngular");
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

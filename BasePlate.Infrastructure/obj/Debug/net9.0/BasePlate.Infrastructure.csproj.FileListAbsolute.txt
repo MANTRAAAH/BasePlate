@@ -13,3 +13,4 @@ C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\ne
 C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\net9.0\refint\BasePlate.Infrastructure.dll
 C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\net9.0\BasePlate.Infrastructure.pdb
 C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\net9.0\ref\BasePlate.Infrastructure.dll
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Infrastructure\obj\Debug\net9.0\BasePlate.Infrastructure.sourcelink.json

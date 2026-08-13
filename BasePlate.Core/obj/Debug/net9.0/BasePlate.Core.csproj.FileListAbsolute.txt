@@ -9,3 +9,4 @@ C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\obj\Debug\net9.0\BaseP
 C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\obj\Debug\net9.0\refint\BasePlate.Core.dll
 C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\obj\Debug\net9.0\BasePlate.Core.pdb
 C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\obj\Debug\net9.0\ref\BasePlate.Core.dll
+C:\Users\antan\Desktop\WebBuilds\BasePlate\BasePlate.Core\obj\Debug\net9.0\BasePlate.Core.sourcelink.json
