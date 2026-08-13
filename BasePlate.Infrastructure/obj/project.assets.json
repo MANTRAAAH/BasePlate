@@ -822,8 +822,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "C:\\Users\\antan\\Desktop\\WebBuilds\\BasePlate\\BasePlate.Core\\BasePlate.Core.csproj": {
-              "projectPath": "C:\\Users\\antan\\Desktop\\WebBuilds\\BasePlate\\BasePlate.Core\\BasePlate.Core.csproj"
+            "C:\\Users\\antan\\Desktop\\WebBuilds\\baseplate\\BasePlate.Core\\BasePlate.Core.csproj": {
+              "projectPath": "C:\\Users\\antan\\Desktop\\WebBuilds\\baseplate\\BasePlate.Core\\BasePlate.Core.csproj"
             }
           }
         }

@@ -22,6 +22,7 @@ public class BasePlateDbContext : DbContext
     public DbSet<TipologiaCottura> TipologieCottura { get; set; } = null!;
     public DbSet<Ingrediente> Ingredienti { get; set; } = null!;
     public DbSet<Allergene> Allergeni { get; set; } = null!;
+    public DbSet<Utente> Utenti { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
