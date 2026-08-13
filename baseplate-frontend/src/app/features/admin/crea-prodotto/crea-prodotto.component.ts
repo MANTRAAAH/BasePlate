@@ -1,4 +1,4 @@
-import { Component, inject, EventEmitter, Output, OnInit,Input } from '@angular/core';
+import { Component, inject, EventEmitter, Output, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProdottiService } from '../../../core/services/prodotti.service';
@@ -11,7 +11,7 @@ import { ElementoBase, LookupDati } from '../../../core/models/prodotto.model';
   template: `
     <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
       <div class="flex justify-between items-center mb-6">
-        <h2>{{ prodottoId ? 'Modifica Pizza' : 'Aggiungi Nuova Pizza' }}</h2>
+        <h2 class="text-2xl font-bold text-gray-800">{{ prodottoId ? 'Modifica Pizza' : 'Aggiungi Nuova Pizza' }}</h2>
         <button type="button" (click)="annulla.emit()" class="text-gray-400 hover:text-gray-600">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
@@ -62,7 +62,11 @@ import { ElementoBase, LookupDati } from '../../../core/models/prodotto.model';
             <label class="block text-sm font-semibold text-gray-700 mb-2">Ingredienti Base</label>
             <div class="space-y-2">
               <label *ngFor="let ing of ingredienti" class="flex items-center gap-2 text-sm text-gray-600">
-                <input type="checkbox" [value]="ing.id" (change)="toggleArray('ingredientiIds', ing.id, $event)" class="rounded text-amber-500 focus:ring-amber-500">
+                <input type="checkbox"
+                       [value]="ing.id"
+                       [checked]="prodottoForm.get('ingredientiIds')?.value?.includes(ing.id)"
+                       (change)="toggleArray('ingredientiIds', ing.id, $event)"
+                       class="rounded text-amber-500 focus:ring-amber-500">
                 {{ ing.nome }}
               </label>
             </div>
@@ -72,7 +76,11 @@ import { ElementoBase, LookupDati } from '../../../core/models/prodotto.model';
             <label class="block text-sm font-semibold text-gray-700 mb-2">Allergeni</label>
             <div class="space-y-2">
               <label *ngFor="let all of allergeni" class="flex items-center gap-2 text-sm text-red-600">
-                <input type="checkbox" [value]="all.id" (change)="toggleArray('allergeniIds', all.id, $event)" class="rounded border-red-300 text-red-500 focus:ring-red-500">
+                <input type="checkbox"
+                       [value]="all.id"
+                       [checked]="prodottoForm.get('allergeniIds')?.value?.includes(all.id)"
+                       (change)="toggleArray('allergeniIds', all.id, $event)"
+                       class="rounded border-red-300 text-red-500 focus:ring-red-500">
                 {{ all.nome }}
               </label>
             </div>
@@ -115,7 +123,7 @@ export class CreaProdottoComponent implements OnInit {
   ingredienti: ElementoBase[] = [];
   allergeni: ElementoBase[] = [];
 
-ngOnInit() {
+  ngOnInit() {
     // 1. Carichiamo sempre i dati base (Categorie, Ingredienti, ecc.)
     this.prodottiService.getLookupDati().subscribe({
       next: (dati: LookupDati) => {
@@ -151,6 +159,7 @@ ngOnInit() {
       error: (err) => alert("Errore nel caricamento del prodotto")
     });
   }
+
   toggleArray(controlName: string, id: number, event: Event) {
     const isChecked = (event.target as HTMLInputElement).checked;
     const currentArray = this.prodottoForm.get(controlName)?.value as number[];
@@ -180,7 +189,8 @@ ngOnInit() {
             alert('Prodotto creato!');
             this.salvato.emit();
           }
-        });}
+        });
       }
     }
   }
+}

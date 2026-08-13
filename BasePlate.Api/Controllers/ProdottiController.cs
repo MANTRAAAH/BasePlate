@@ -130,10 +130,15 @@ public class ProdottiController : ControllerBase
     // ==========================================
     // PUT: api/prodotti/{id} (MODIFICA)
     // ==========================================
+    // ==========================================
+    // PUT: api/prodotti/{id} (MODIFICA)
+    // ==========================================
+    // ==========================================
+    // PUT: api/prodotti/{id} (MODIFICA)
+    // ==========================================
     [HttpPut("{id}")]
     public async Task<IActionResult> ModificaProdotto(int id, [FromBody] CreaProdottoDto request)
     {
-        // 1. Cerchiamo il prodotto includendo le sue liste attuali di ingredienti e allergeni
         var prodotto = await _context.Prodotti
             .Include(p => p.Allergeni)
             .Include(p => p.Ingredienti)
@@ -142,30 +147,56 @@ public class ProdottiController : ControllerBase
         if (prodotto == null)
             return NotFound(new { Message = "Prodotto non trovato" });
 
-        // 2. Aggiorniamo i dati base
+        // 1. Aggiorniamo i dati base
         prodotto.Nome = request.Nome;
         prodotto.Descrizione = request.Descrizione;
         prodotto.Prezzo = request.Prezzo;
         prodotto.CategoriaId = request.CategoriaId;
         prodotto.ImmagineUrl = request.ImmagineUrl;
 
-        // 3. Il trucco per aggiornare le relazioni molti-a-molti: 
-        // Svuotiamo le liste attuali e le ricreiamo con i nuovi dati!
-        prodotto.Allergeni.Clear();
-        if (request.AllergeniIds != null && request.AllergeniIds.Any())
-        {
-            prodotto.Allergeni = request.AllergeniIds
-                .Select(allId => new ProdottoAllergene { AllergeneId = allId }).ToList();
-        }
+        // Inizializziamo le liste vuote se per caso arrivano null dal frontend
+        request.IngredientiIds ??= new List<int>();
+        request.AllergeniIds ??= new List<int>();
 
-        prodotto.Ingredienti.Clear();
-        if (request.IngredientiIds != null && request.IngredientiIds.Any())
-        {
-            prodotto.Ingredienti = request.IngredientiIds
-                .Select(ingId => new ProdottoIngrediente { IngredienteId = ingId }).ToList();
-        }
+        // -----------------------------------------------------
+        // 2. SINCRONIZZAZIONE INTELLIGENTE INGREDIENTI
+        // -----------------------------------------------------
+        // A. Trova e rimuovi gli ingredienti deselezionati
+        var ingredientiDaRimuovere = prodotto.Ingredienti
+            .Where(i => !request.IngredientiIds.Contains(i.IngredienteId))
+            .ToList();
+        foreach (var r in ingredientiDaRimuovere)
+            prodotto.Ingredienti.Remove(r);
 
-        // 4. Salviamo su database
+        // B. Trova e aggiungi SOLO i nuovi ingredienti selezionati
+        var ingredientiAttuali = prodotto.Ingredienti.Select(i => i.IngredienteId).ToList();
+        var ingredientiDaAggiungere = request.IngredientiIds
+            .Where(id => !ingredientiAttuali.Contains(id))
+            .ToList();
+        foreach (var idNuovo in ingredientiDaAggiungere)
+            prodotto.Ingredienti.Add(new ProdottoIngrediente { IngredienteId = idNuovo });
+
+
+        // -----------------------------------------------------
+        // 3. SINCRONIZZAZIONE INTELLIGENTE ALLERGENI
+        // -----------------------------------------------------
+        // A. Trova e rimuovi gli allergeni deselezionati
+        var allergeniDaRimuovere = prodotto.Allergeni
+            .Where(a => !request.AllergeniIds.Contains(a.AllergeneId))
+            .ToList();
+        foreach (var r in allergeniDaRimuovere)
+            prodotto.Allergeni.Remove(r);
+
+        // B. Trova e aggiungi SOLO i nuovi allergeni selezionati
+        var allergeniAttuali = prodotto.Allergeni.Select(a => a.AllergeneId).ToList();
+        var allergeniDaAggiungere = request.AllergeniIds
+            .Where(id => !allergeniAttuali.Contains(id))
+            .ToList();
+        foreach (var idNuovo in allergeniDaAggiungere)
+            prodotto.Allergeni.Add(new ProdottoAllergene { AllergeneId = idNuovo });
+
+
+        // 4. Salvataggio finale
         await _context.SaveChangesAsync();
         return Ok(new { Message = "Prodotto aggiornato con successo!" });
     }
