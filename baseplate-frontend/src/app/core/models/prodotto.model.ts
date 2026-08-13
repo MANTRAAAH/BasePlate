@@ -21,3 +21,15 @@ export interface CreaProdottoDto {
   allergeniIds: number[];
   immagineUrl?: string;
 }
+// Interfaccia generica per ID e Nome (usata per Categorie, Ingredienti, ecc.)
+export interface ElementoBase {
+  id: number;
+  nome: string;
+}
+
+// L'oggetto unico che ci restituisce l'endpoint /lookup
+export interface LookupDati {
+  categorie: ElementoBase[];
+  allergeni: ElementoBase[];
+  ingredienti: ElementoBase[];
+}
