@@ -1,11 +1,13 @@
 using BasePlate.Core.DTOs; // Assicurati che il namespace corrisponda a dove hai messo CreaProdottoDto
 using BasePlate.Core.Entities;
+using Microsoft.AspNetCore.Authorization; // 👈 Aggiungi questo in cima se non c'è
 using BasePlate.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BasePlate.Api.Controllers;
 
+[Authorize(Roles = "Admin")] // 👈 IL LUCCHETTO! Solo gli Admin possono usare questi endpoint
 [ApiController]
 [Route("api/[controller]")]
 public class ProdottiController : ControllerBase

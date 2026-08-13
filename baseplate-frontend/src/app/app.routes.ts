@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard'; // 👈 Importiamo il buttafuori
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
   // 1. ROTTA PUBBLICA (Il menù per i clienti)
@@ -14,16 +16,16 @@ export const routes: Routes = [
   },
 
   // 3. ROTTA GESTIONALE (Per il Ristoratore)
-  // In futuro qui metteremo il "Guard" che bloccherà l'accesso a chi non ha il Token JWT Admin
   {
     path: 'admin',
+    canActivate: [adminGuard], // 👈 IL BUTTAFUORI ENTRA IN AZIONE QUI! Blocca chi non è loggato.
     loadComponent: () => import('./features/admin/dashboard-admin/dashboard-admin.component').then(m => m.DashboardAdminComponent)
   },
 
   // 4. ROTTA SALA (Per i Camerieri)
-  // Anche qui ci sarà un Guard legato al ruolo "Cameriere"
   {
     path: 'sala',
+    canActivate: [authGuard], // 👈 Mettiamolo preventivamente anche in sala, visto che non è pubblica.
     loadComponent: () => import('./features/sala/dashboard-sala/dashboard-sala.component').then(m => m.DashboardSalaComponent)
   },
 

@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using BasePlate.Core.DTOs;
+using Microsoft.AspNetCore.Authorization; // 👈 Aggiungi questo in cima se non c'è
 using BasePlate.Core.Entities;
 using BasePlate.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace BasePlate.Api.Controllers;
 
+[Authorize(Roles = "Admin")] // 👈 IL LUCCHETTO! Solo gli Admin possono usare questi endpoint
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
