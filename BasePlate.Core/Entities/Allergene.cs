@@ -1,4 +1,7 @@
+using BasePlate.Core.Interfaces; // 👈 Importa l'interfaccia
 namespace BasePlate.Core.Entities;
+
+
 
 public class Allergene : TenantEntity
 {

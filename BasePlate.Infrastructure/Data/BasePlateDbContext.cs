@@ -23,6 +23,7 @@ public class BasePlateDbContext : DbContext
     public DbSet<Ingrediente> Ingredienti { get; set; } = null!;
     public DbSet<Allergene> Allergeni { get; set; } = null!;
     public DbSet<Utente> Utenti { get; set; }
+    public DbSet<Ristorante> Ristoranti { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,9 +50,24 @@ public class BasePlateDbContext : DbContext
     private LambdaExpression ConvertFilterExpression(Type type)
     {
         var param = System.Linq.Expressions.Expression.Parameter(type, "e");
+
+        // e.TenantId
         var property = System.Linq.Expressions.Expression.Property(param, nameof(TenantEntity.TenantId));
-        var value = System.Linq.Expressions.Expression.Constant(_tenantId);
-        var body = System.Linq.Expressions.Expression.Equal(property, value);
+
+        // _tenantId
+        var tenantValue = System.Linq.Expressions.Expression.Constant(_tenantId);
+
+        // Guid.Empty
+        var emptyValue = System.Linq.Expressions.Expression.Constant(Guid.Empty);
+
+        // Condizione 1: _tenantId == Guid.Empty (Sei il SuperAdmin?)
+        var isSuperAdmin = System.Linq.Expressions.Expression.Equal(tenantValue, emptyValue);
+
+        // Condizione 2: e.TenantId == _tenantId (Sei nel tuo ristorante?)
+        var isTenantMatch = System.Linq.Expressions.Expression.Equal(property, tenantValue);
+
+        // Combiniamo con OR: isSuperAdmin || isTenantMatch
+        var body = System.Linq.Expressions.Expression.OrElse(isSuperAdmin, isTenantMatch);
 
         return System.Linq.Expressions.Expression.Lambda(body, param);
     }

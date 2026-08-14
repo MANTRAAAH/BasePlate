@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\antan\\Desktop\\WebBuilds\\BasePlate\\BasePlate.Api\\BasePlate.Api.csproj": {}
+    "C:\\Users\\antan\\Desktop\\WebBuilds\\BasePlate\\BasePlate.API\\BasePlate.Api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\antan\\Desktop\\WebBuilds\\BasePlate\\BasePlate.Api\\BasePlate.Api.csproj": {
+    "C:\\Users\\antan\\Desktop\\WebBuilds\\BasePlate\\BasePlate.API\\BasePlate.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\antan\\Desktop\\WebBuilds\\BasePlate\\BasePlate.Api\\BasePlate.Api.csproj",
+        "projectUniqueName": "C:\\Users\\antan\\Desktop\\WebBuilds\\BasePlate\\BasePlate.API\\BasePlate.Api.csproj",
         "projectName": "BasePlate.Api",
-        "projectPath": "C:\\Users\\antan\\Desktop\\WebBuilds\\BasePlate\\BasePlate.Api\\BasePlate.Api.csproj",
+        "projectPath": "C:\\Users\\antan\\Desktop\\WebBuilds\\BasePlate\\BasePlate.API\\BasePlate.Api.csproj",
         "packagesPath": "C:\\Users\\antan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\antan\\Desktop\\WebBuilds\\BasePlate\\BasePlate.Api\\obj\\",
+        "outputPath": "C:\\Users\\antan\\Desktop\\WebBuilds\\BasePlate\\BasePlate.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

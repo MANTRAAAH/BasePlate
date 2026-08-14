@@ -3,6 +3,7 @@ using System;
 using BasePlate.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BasePlate.Infrastructure.Migrations
 {
     [DbContext(typeof(BasePlateDbContext))]
-    partial class BasePlateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260814140709_FixTenantArchitecture")]
+    partial class FixTenantArchitecture
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -255,6 +258,9 @@ namespace BasePlate.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid?>("RistoranteId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Ruolo")
                         .IsRequired()
                         .HasColumnType("text");
@@ -264,7 +270,7 @@ namespace BasePlate.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TenantId");
+                    b.HasIndex("RistoranteId");
 
                     b.ToTable("Utenti");
                 });
@@ -345,9 +351,7 @@ namespace BasePlate.Infrastructure.Migrations
                 {
                     b.HasOne("BasePlate.Core.Entities.Ristorante", "Ristorante")
                         .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RistoranteId");
 
                     b.Navigation("Ristorante");
                 });

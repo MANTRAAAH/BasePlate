@@ -3,6 +3,7 @@ using System;
 using BasePlate.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BasePlate.Infrastructure.Migrations
 {
     [DbContext(typeof(BasePlateDbContext))]
-    partial class BasePlateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260814135430_MakeMultiTenantArchitecture")]
+    partial class MakeMultiTenantArchitecture
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,6 +55,9 @@ namespace BasePlate.Infrastructure.Migrations
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("RistoranteId")
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("TenantId")
                         .HasColumnType("uuid");
@@ -176,41 +182,6 @@ namespace BasePlate.Infrastructure.Migrations
                     b.ToTable("ProdottoIngrediente");
                 });
 
-            modelBuilder.Entity("BasePlate.Core.Entities.Ristorante", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ColorePrimario")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("DominioPersonalizzato")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("LogoUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PartitaIva")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("TemaLayout")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Ristoranti");
-                });
-
             modelBuilder.Entity("BasePlate.Core.Entities.TipologiaCottura", b =>
                 {
                     b.Property<int>("Id")
@@ -259,12 +230,7 @@ namespace BasePlate.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("TenantId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("TenantId");
 
                     b.ToTable("Utenti");
                 });
@@ -339,17 +305,6 @@ namespace BasePlate.Infrastructure.Migrations
                     b.Navigation("Ingrediente");
 
                     b.Navigation("Prodotto");
-                });
-
-            modelBuilder.Entity("BasePlate.Core.Entities.Utente", b =>
-                {
-                    b.HasOne("BasePlate.Core.Entities.Ristorante", "Ristorante")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Ristorante");
                 });
 
             modelBuilder.Entity("BasePlate.Core.Entities.Categoria", b =>
