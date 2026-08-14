@@ -1,53 +1,78 @@
-# 🚀 EXECUTIVE PROJECT BLUEPRINT
-**Progetto:** Turnkey Digital Ecosystem & SaaS (Smart Table, MDM, Web)
-**Settore:** Food & Beverage / Hospitality (PMI, Ristoranti, B&B)
-**Modello di Business:** White-Label B2B SaaS
+# 🚀 EXECUTIVE PROJECT BLUEPRINT (EXTENDED)
+**Progetto:** BasePlate - Turnkey Digital Ecosystem & SaaS (Smart Table, MDM, Web)  
+**Settore:** Food & Beverage / Hospitality (PMI, Ristoranti, B&B, Dark Kitchens, Franchising)  
+**Modello di Business:** White-Label B2B SaaS Multi-Tenant  
+**Stato Sicurezza & Compliance:** GDPR Compliant, Data Isolation by Design
 
 ---
 
-## 📊 1. Modello Finanziario e Go-to-Market
-Il prodotto è ingegnerizzato come una soluzione SaaS multi-tenant scalabile. L'investimento nello sviluppo del "Framework" iniziale (Core Engine) viene ammortizzato rapidamente, trasformando le successive vendite in margine netto (rendita ricorrente).
+## 📊 1. Modello Finanziario, Scalabilità e Go-to-Market
+L'ingegnerizzazione del software si basa su un'architettura Multi-Tenant che abbatte drasticamente i costi marginali per ogni nuovo cliente acquisito. Il sistema è concepito per generare MRR (Monthly Recurring Revenue) ad alto margine, trattenendo il cliente tramite un lock-in tecnologico basato sull'estrema efficienza operativa.
 
-*   **Pricing Standard al Cliente (Total Contract Value Anno 1: € 3.500)**
-    *   **Setup Iniziale (€ 2.000 una tantum):** Copre l'onboarding, la configurazione del dominio, il setup del sito vetrina personalizzato, e l'attivazione del workspace MDM e della PWA di sala.
-    *   **Canone Ricorrente (€ 1.500/anno):** Licenza d'uso del software SaaS, hosting Cloud, manutenzione sistemistica, notifiche push e aggiornamenti continui. Genera un ARR (Annual Recurring Revenue) di € 125/mese per istanza.
-*   **Strategia di Acquisizione:** Proposizione di un ecosistema digitale "chiavi in mano" (Sito ad alte performance + Software di Sala) che disintermedia le OTA (per il ricettivo) e abbatte i tempi morti nel servizio al tavolo, generando un ROI tangibile e immediato per il titolare.
+### Struttura dei Ricavi (Unit Economics)
+*   **Setup e Onboarding Iniziale (Una Tantum: € 2.000 - € 3.500):**
+    *   Provisioning del dominio personalizzato e configurazione DNS.
+    *   Configurazione del Theme Engine (Palette, Loghi, Tipografia) per il sito vetrina.
+    *   Mappatura spaziale 2D della sala e setup dell'infrastruttura di rete/KDS in loco.
+    *   Formazione dello staff (abbattuta grazie alla UX zero-friction).
+*   **Licenza SaaS Premium (Ricorrente: € 1.500 - € 2.400/anno):**
+    *   Include hosting cloud, failover, backup giornalieri, CDN globale per la vetrina e aggiornamenti continui.
+    *   SLA (Service Level Agreement) garantito al 99.9% di uptime per il servizio in sala.
+*   **Upselling e Moduli Aggiuntivi (Revenue Expansion):**
+    *   Integrazioni con delivery terzi (Glovo, Deliveroo, UberEats).
+    *   Accesso Headless API per agenzie che sviluppano front-end custom per il ristoratore.
+    *   Moduli avanzati di Food Costing e gestione magazzino integrata.
+
+### Strategia di Acquisizione (GTM)
+Il posizionamento sul mercato è netto: BasePlate non è solo un "gestionale per scontrini", ma il primo **Ecosistema Operativo Ibrido**. Risolve il problema del marketing (attrazione clienti tramite SEO locale a punteggio 100/100) e il problema operativo (turnover tavoli, errori di comanda e logoramento dello staff).
 
 ---
 
-## ⚙️ 2. Architettura IT (SaaS Engine Multi-Tenant)
-L'infrastruttura è progettata per massimizzare la flessibilità, minimizzare i costi di esecuzione e azzerare il rischio di *Data Leakage* tra i vari locali.
+## ⚙️ 2. Architettura IT & Cloud Infrastructure (Dual-Engine)
+L'ecosistema sfrutta un paradigma a microservizi logici su un database condiviso, garantendo prestazioni edge e sicurezza enterprise.
 
-*   **Approccio Database:** Multi-Tenant a Database Singolo (Shared Schema).
-*   **Backend (API Core):** C# / .NET Core. Gestisce l'orchestrazione, la validazione e la sicurezza.
-*   **Isolamento Dati (Security by Design):** Implementazione rigorosa dei **Global Query Filters di EF Core**. Ogni query al database applica automaticamente il filtro sul `TenantId`, prevenendo nativamente l'esposizione accidentale di dati tra ristoranti diversi.
-*   **Frontend (White-Label):** Angular (con Tailwind CSS). Il codice è unico; i temi, i loghi e i colori vengono iniettati dinamicamente tramite file di configurazione per ogni Tenant.
-*   **Performance & Caching:** Redis utilizzato come layer di cache per il catalogo menu, azzerando il carico di lettura sul database PostgreSQL durante i picchi di affluenza in sala (effetto "Noisy Neighbor").
-*   **Storage Risorse:** Object Storage (Azure Blob / S3) strutturato a compartimenti stagni per Tenant (es. `/tenant-ID/assets/`) per la gestione di immagini dei piatti e loghi.
-*   **Infrastruttura & DevOps:** Containerizzazione Docker e pipeline CI/CD per rilasci globali simultanei su tutto il parco clienti.
+### Backend & Database (Master Hub)
+*   **Core API (.NET 9 / C#):** Architettura RESTful e asincrona. Gestisce l'orchestrazione, la validazione delle logiche di business e il routing dei Webhook.
+*   **Database (PostgreSQL 16+):** Modello *Shared Schema, Multi-Tenant*. Utilizzo estensivo di indici B-Tree e campi `JSONB` per storicizzare le preferenze grafiche o le variazioni di configurazione specifiche di ogni Ristorante senza alterare lo schema DDL.
+*   **Isolamento (Filtri EF Core):** Intercettazione a basso livello tramite l'interfaccia `IMustHaveTenant` e i **Global Query Filters**. Il `RistoranteId` viene estratto dal Claim del JWT ad ogni singola richiesta HTTP. Il backend è matematicamente impossibilitato a "sporcare" i dati tra tenant diversi.
+*   **Real-Time & Caching:** 
+    *   **SignalR:** Hub WebSocket per la comunicazione bidirezionale a bassissima latenza (Sala <-> Cucina).
+    *   **Redis:** Layer di caching in-memory con policy LRU (Least Recently Used) per servire il catalogo menu senza colpire il DB relazionale durante i picchi del sabato sera.
+
+### Frontend Dual-Engine
+*   **Engine 1 - Gestionale Interno (Angular + Tailwind):** SPA protetta e reattiva, potenziata con i *Signals* per la gestione dello stato. Rendering CSR per le rotte operative (`/admin`, `/sala`, `/kds`). Implementazione di *Service Workers* e *IndexedDB* per gestire micro-disconnessioni di rete in sala senza perdere la comanda in corso (Offline Tolerance).
+*   **Engine 2 - Vetrina Pubblica (Astro + Tailwind):** Framework SSG/Hybrid déployato su infrastruttura Edge (es. Cloudflare Pages o Vercel). Pagine pre-generate in HTML puro al momento del salvataggio dei dati dall'Admin, minimizzando il Time To First Byte (TTFB) a pochi millisecondi.
 
 ---
 
-## 📦 3. Work Breakdown Structure (Moduli del Sistema)
+## 📦 3. Work Breakdown Structure (Moduli di Sistema Dettagliati)
 
-### Modulo A: Front-Office Cliente (Conversion & UX)
-*   **Sito Vetrina Personalizzato:** Sito pubblico ad alte prestazioni (Lighthouse score ~100) ottimizzato per la SEO locale.
-*   **QR Gateway & Web App Menu:** Accesso istantaneo tramite 4G/5G al tavolo senza installazione. Identificazione automatica del Tenant e del numero del tavolo tramite parametro URL.
-*   **Wishlist Engine:** Menu navigabile dinamicamente con badge per allergeni calcolati in tempo reale e logiche di cross-selling.
+### Modulo A: SuperAdmin & Master Provisioning
+*   **Multi-Tenant Orchestrator:** Pannello di controllo esclusivo per il gestore della piattaforma (Tu). Fornisce telemetria sull'utilizzo delle risorse CPU/RAM per singolo Tenant.
+*   **Onboarding One-Click:** Automazione transazionale. Alla pressione del tasto, il backend:
+    1. Registra il Ristorante e l'Utente Admin.
+    2. Inietta un set di dati Master (es. aliquote IVA, categorie standard).
+    3. Lancia una chiamata API alla CDN per generare il certificato SSL del nuovo dominio.
+    4. Spara un Webhook all'Engine Astro per triggerare la prima build statica del nuovo sito.
+*   **Billing Integrato:** Collegamento nativo con Stripe Connect per la fatturazione automatica mensile o annuale dei canoni SaaS ai ristoratori.
 
-### Modulo B: Back-Office Sala (Efficienza Operativa)
-L'interfaccia è progettata per risolvere le criticità pratiche sul piano operativo (viaggi a vuoto, device personali, turni lunghi).
-*   **PWA (Progressive Web App) BYOD:** Interfaccia installabile sui dispositivi personali dello staff tramite browser. Zero costi hardware per il ristoratore.
-*   **Ergonomia e Batteria:** Design esclusivamente in **Dark Mode** per massimizzare il risparmio energetico dei device durante i turni di servizio.
-*   **Notifiche Push Prioritizzate (SignalR):** Motore real-time in C# che instrada le chiamate dai tavoli ("Ordine Pronto", "Conto", "Assistenza") ai device in sala, associate a feedback acustici differenziati per minimizzare l'attrito cognitivo.
+### Modulo B: Vetrina e Conversione SEO (Astro)
+*   **Edge SEO e Core Web Vitals:** Grazie al rendering statico di Astro, il layout (Liquid Glass, Sharp Pastel, ecc.) viene risolto a tempo di build. Risultato: punteggi di performance costantemente sul 98-100% per Google Lighthouse, dominando la SERP locale.
+*   **Schema.org e JSON-LD Dinamico:** Iniezione profonda di microdati per `Restaurant`, `Menu`, `MenuItem` e `Offer`. Le pizze, i prezzi e le recensioni diventano entità che Google legge e mostra direttamente nelle schede di ricerca.
+*   **Smart Wishlist & Carrello Ibrido:** Il cliente scansiona il QR code al tavolo. Il sistema rileva tramite parametro URL (es. `?tavolo=12`) la posizione esatta. Può compilare l'ordine autonomamente e inviarlo (innescando un ping in sala per la validazione del cameriere) o usarlo solo come catalogo interattivo.
 
-### Modulo C: Master Data Management (PIM Gestionale)
-Pannello Admin per il ristoratore, basato su un solido schema relazionale per garantire l'integrità del catalogo.
-*   **Dizionario Normalizzato:** Tabelle di lookup per Ingredienti, Categorie e Tipologie di Cottura (es. "Pizza a 3 cotture").
-*   **Gestione Allergeni Automatica:** Relazione molti-a-molti tra Ingredienti e Allergeni. Se un piatto include un ingrediente a rischio, il sistema propaga il warning su tutti i frontend automaticamente.
-*   **Digital Sommelier:** Scheda prodotto estesa consultabile dalla sala per fornire risposte precise sulle preparazioni ai clienti esigenti.
+### Modulo C: Operatività di Sala & KDS (Angular PWA)
+L'interfaccia è frutto dell'analisi sul campo: progettata per operatori sotto stress e in movimento costante.
+*   **Canvas Editor & Spatial Mapping:** Il ristoratore mappa la sala con uno strumento visivo Drag&Drop. Il cameriere non guarda una sterile lista di numeri, ma la rappresentazione topografica del locale, riducendo a zero gli errori di consegna.
+*   **Ergonomia Estrema (BYOD - Bring Your Own Device):** UI tassativamente in *Dark Mode* per azzerare l'affaticamento visivo e consumare meno batteria sugli schermi OLED degli smartphone personali. Target tattili (bottoni) maggiorati per evitare miss-click.
+*   **Algoritmo Vettoriale "Split-Conto":** Risoluzione del peggior collo di bottiglia in cassa. UI visuale a "vassoi". Si trascinano i singoli dettagli dell'ordine sui vari pagatori. Il sistema calcola dinamicamente le frazioni (es. bottiglie d'acqua e coperti divisi automaticamente per N persone), generando scontrini parziali o ricevute telematiche perfette al centesimo.
+*   **KDS (Kitchen Display System):** Monitor rugged in cucina collegati via SignalR. Le comande esplodono a schermo per partita (Forno, Friggitoria, Cucina). Timer cromatici indicano i ritardi (es. scontrino che passa al rosso dopo 15 minuti di attesa).
 
-### Modulo D: Integrazioni Fiscali (Middleware Asincrono)
-*   **Pattern Adapter:** Architettura predisposta per integrarsi con sistemi esterni senza inquinare il core.
-*   **Shadow Comanda:** Gestione del ciclo di vita dell'ordine a stati (Bozza -> Modifica -> Da Saldare) salvata nel database.
-*   **Integrazione Cloud-to-Cloud / Local Worker:** Background services in .NET Core per impacchettare l'ordine chiuso e inviarlo in modo asincrono (fire-and-forget con retry policy) a servizi di cassa o stampanti telematiche LAN, senza mai bloccare la UI dell'operatore di sala.
+### Modulo D: Master Data Management (PIM)
+*   **Gestore Catalogo Multidimensionale:** Non un semplice listino, ma un database relazionale di prodotti, varianti (es. formati "Normale", "Maxi"), impasti (es. "Senza Glutine", "Pinsa") e supplementi, tutti con regole rigide di pricing (sovrapprezzo percentuale o fisso).
+*   **Motore Allergeni Propagativo:** Collegamento molti-a-molti tra `Ingrediente` e `Allergene`. Se il ristoratore marca la "Farina" con glutine, tutte le pizze che la contengono si aggiornano in automatico in tempo reale su menu e palmari, tutelando legalmente l'attività.
+*   **Gestione Permessi Granulare (RBAC):** Role-Based Access Control. Il ristoratore crea account limitati: il "Cameriere" vede solo la mappa e le comande; il "Cuoco" vede solo il KDS; lo "Store Manager" vede reportistica e statistiche.
+
+### Modulo E: Integrazioni Fiscali e Periferiche
+*   **Worker Asincrono .NET:** Servizio in background che gestisce le code di stampa. Se la rete Wi-Fi locale salta un istante, il worker mette il task in coda e riprova (Retry Policy), assicurando che nessuna comanda vada persa nel tragitto Sala-Cucina.
+*   **Adapter di Stampa ed EPSON/ESC-POS:** Moduli di traduzione dati per comunicare direttamente con le stampanti di reparto LAN o con i registratori telematici cloud-based, estromettendo l'hardware proprietario obsoleto.
