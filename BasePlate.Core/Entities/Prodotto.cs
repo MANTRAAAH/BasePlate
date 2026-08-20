@@ -20,4 +20,5 @@ public class Prodotto : TenantEntity
 
     // Attenzione: deve essere ICollection<ProdottoIngrediente> e non <Ingrediente>
     public ICollection<ProdottoIngrediente> Ingredienti { get; set; } = new List<ProdottoIngrediente>();
+    public ICollection<ProdottoGruppoModificatore> GruppiModificatori { get; set; } = new List<ProdottoGruppoModificatore>();
 }

@@ -1,13 +1,13 @@
-using BasePlate.Core.DTOs.Prodotti; // 📦 Importiamo i nuovi DTO ordinati
+using BasePlate.Core.DTOs.Prodotti;
 using BasePlate.Core.Entities;
 using BasePlate.Infrastructure.Data;
-using Microsoft.AspNetCore.Authorization; // 👈 Aggiungi questo in cima se non c'è
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BasePlate.Api.Controllers;
 
-[Authorize(Roles = "Admin")] // 👈 IL LUCCHETTO! Solo gli Admin possono usare questi endpoint
+[Authorize(Roles = "Admin")] // 👈 IL LUCCHETTO PRINCIPALE RESTA
 [ApiController]
 [Route("api/[controller]")]
 public class CategorieController : ControllerBase
@@ -19,11 +19,13 @@ public class CategorieController : ControllerBase
         _context = context;
     }
 
-    // GET: api/categorie
+    // ==========================================
+    // GET: api/categorie (PUBBLICO - Vetrina)
+    // ==========================================
+    [AllowAnonymous] // 👈 SBLOCCO CHIRURGICO PER IL PUBBLICO
     [HttpGet]
     public async Task<IActionResult> GetCategorie()
     {
-        // 🛡️ Mappiamo direttamente l'entità al ReadDto per non esporre dettagli interni
         var categorie = await _context.Categorie
             .Select(c => new CategoriaReadDto
             {
@@ -35,20 +37,20 @@ public class CategorieController : ControllerBase
         return Ok(categorie);
     }
 
-    // POST: api/categorie
+    // ==========================================
+    // POST: api/categorie (PROTETTO - Solo Admin)
+    // ==========================================
     [HttpPost]
     public async Task<IActionResult> CreaCategoria([FromBody] CreaCategoriaDto request)
     {
         var nuovaCategoria = new Categoria
         {
             Nome = request.Nome
-            // 🛡️ Il TenantId viene iniettato automaticamente dal DbContext/Interceptors
         };
 
         _context.Categorie.Add(nuovaCategoria);
         await _context.SaveChangesAsync();
 
-        // Restituiamo il DTO di lettura pulito anziché l'entità grezza del database
         var responseDto = new CategoriaReadDto
         {
             Id = nuovaCategoria.Id,

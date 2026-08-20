@@ -1123,7 +1123,10 @@
         },
         "runtime": {
           "bin/placeholder/BasePlate.Infrastructure.dll": {}
-        }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
       }
     }
   },

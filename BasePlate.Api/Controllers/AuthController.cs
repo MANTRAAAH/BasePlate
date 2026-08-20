@@ -2,16 +2,16 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using BasePlate.Core.DTOs;
-using Microsoft.AspNetCore.Authorization; // 👈 Aggiungi questo in cima se non c'è
 using BasePlate.Core.Entities;
 using BasePlate.Infrastructure.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BasePlate.Api.Controllers;
 
-[Authorize(Roles = "Admin")] // 👈 IL LUCCHETTO! Solo gli Admin possono usare questi endpoint
+[Authorize] // 👈 Di base richiede il login per tutto il controller...
 [ApiController]
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
@@ -25,20 +25,24 @@ public class AuthController : ControllerBase
         _configuration = configuration;
     }
 
-    // POST: api/auth/register (Endpoint temporaneo per creare il tuo utente)
+    [AllowAnonymous] // 👈 ...MA sblocca esplicitamente la registrazione!
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto request)
     {
         if (await _context.Utenti.AnyAsync(u => u.Email == request.Email))
             return BadRequest(new { Message = "Email già in uso." });
 
+        // Verifichiamo che il ristorante esista davvero!
+        if (!await _context.Ristoranti.AnyAsync(r => r.Id == request.TenantId))
+            return BadRequest(new { Message = "Ristorante (Tenant) non trovato." });
+
         var utente = new Utente
         {
             Nome = request.Nome,
             Email = request.Email,
-            // Criptiamo la password usando BCrypt!
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
-            Ruolo = "Admin"
+            Ruolo = "Admin",
+            TenantId = request.TenantId // 👈 Assegniamo fisicamente l'utente al Ristorante
         };
 
         _context.Utenti.Add(utente);
@@ -47,13 +51,12 @@ public class AuthController : ControllerBase
         return Ok(new { Message = "Amministratore creato con successo!" });
     }
 
-    // POST: api/auth/login
+    [AllowAnonymous] // 👈 Sblocca esplicitamente il login!
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto request)
     {
         var utente = await _context.Utenti.FirstOrDefaultAsync(u => u.Email == request.Email);
 
-        // Controlliamo che l'utente esista e che la password coincida con l'hash salvato
         if (utente == null || !BCrypt.Net.BCrypt.Verify(request.Password, utente.PasswordHash))
             return Unauthorized(new { Message = "Credenziali non valide." });
 
@@ -63,7 +66,8 @@ public class AuthController : ControllerBase
         {
             Token = token,
             Nome = utente.Nome,
-            Ruolo = utente.Ruolo
+            Ruolo = utente.Ruolo,
+            TenantId = utente.TenantId // Lo restituiamo anche nel JSON per comodità del frontend
         });
     }
 
@@ -73,13 +77,14 @@ public class AuthController : ControllerBase
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        // I "Claims" sono le informazioni leggibili all'interno del token
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, utente.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Email, utente.Email),
             new Claim("nome", utente.Nome),
-            new Claim(ClaimTypes.Role, utente.Ruolo)
+            new Claim(ClaimTypes.Role, utente.Ruolo),
+            // 🔥 IL CUORE DEL MULTI-TENANT: Scriviamo il TenantId dentro il Token!
+            new Claim("tenantId", utente.TenantId.ToString())
         };
 
         var token = new JwtSecurityToken(

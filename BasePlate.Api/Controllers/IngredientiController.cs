@@ -1,13 +1,13 @@
 using BasePlate.Core.DTOs;
 using BasePlate.Core.Entities;
 using BasePlate.Infrastructure.Data;
-using Microsoft.AspNetCore.Authorization; // 👈 Aggiungi questo in cima se non c'è
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BasePlate.Api.Controllers;
 
-[Authorize(Roles = "Admin")] // 👈 IL LUCCHETTO! Solo gli Admin possono usare questi endpoint
+[Authorize(Roles = "Admin")] // 👈 IL LUCCHETTO PRINCIPALE RESTA
 [ApiController]
 [Route("api/[controller]")]
 public class IngredientiController : ControllerBase
@@ -15,9 +15,16 @@ public class IngredientiController : ControllerBase
     private readonly BasePlateDbContext _context;
     public IngredientiController(BasePlateDbContext context) => _context = context;
 
+    // ==========================================
+    // GET: api/ingredienti (PUBBLICO - Vetrina)
+    // ==========================================
+    [AllowAnonymous] // 👈 SBLOCCO CHIRURGICO PER IL PUBBLICO
     [HttpGet]
     public async Task<IActionResult> Get() => Ok(await _context.Ingredienti.ToListAsync());
 
+    // ==========================================
+    // METODI POST, PUT, DELETE (PROTETTI - Solo Admin)
+    // ==========================================
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] LookupDto request)
     {

@@ -10,6 +10,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Registriamo il Tenant Provider
+builder.Services.AddHttpContextAccessor(); // 👈 AGGIUNGI QUESTA RIGA!
 builder.Services.AddScoped<ITenantProvider, CurrentTenantProvider>();
 
 // 2. Registriamo Entity Framework e PostgreSQL

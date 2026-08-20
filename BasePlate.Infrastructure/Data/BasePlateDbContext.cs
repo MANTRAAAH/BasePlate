@@ -2,7 +2,6 @@ using BasePlate.Core.Entities;
 using BasePlate.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using System.Linq.Expressions;
 
 namespace BasePlate.Infrastructure.Data;
 
@@ -16,68 +15,66 @@ public class BasePlateDbContext : DbContext
         _tenantId = tenantProvider.GetTenantId();
     }
 
-    // Le nostre tabelle nel database
+    // --- FASE 1: Master Data ---
     public DbSet<Prodotto> Prodotti { get; set; } = null!;
     public DbSet<Categoria> Categorie { get; set; } = null!;
-    public DbSet<TipologiaCottura> TipologieCottura { get; set; } = null!;
     public DbSet<Ingrediente> Ingredienti { get; set; } = null!;
     public DbSet<Allergene> Allergeni { get; set; } = null!;
-    public DbSet<Utente> Utenti { get; set; }
-    public DbSet<Ristorante> Ristoranti { get; set; }
+    // Le nuove tabelle del motore menu
+    public DbSet<GruppoModificatore> GruppiModificatori { get; set; } = null!;
+    public DbSet<OpzioneModificatore> OpzioniModificatore { get; set; } = null!;
+    public DbSet<ProdottoGruppoModificatore> ProdottoGruppiModificatori { get; set; } = null!;
+
+    /* // --- FASE 2: Logica Core & Ordini ---
+     public DbSet<TenantSettings> TenantSettings { get; set; } = null!; // Gestione Coperto e Orari
+     public DbSet<GruppoModificatore> GruppiModificatori { get; set; } = null!; // Sostituisce TipologiaCottura per essere più flessibile
+     public DbSet<Ordine> Ordini { get; set; } = null!;
+     public DbSet<RigaOrdine> RigheOrdine { get; set; } = null!;
+ */
+    // --- Amministrazione ---
+    public DbSet<Utente> Utenti { get; set; } = null!;
+    public DbSet<Ristorante> Ristoranti { get; set; } = null!; // La tabella master (Tenants)
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Applichiamo la configurazione da un assembly separato (buona pratica per tenere pulito il db context)
+        // Applichiamo le configurazioni mappate (Fluent API)
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-        // 🛡️ SICUREZZA MULTI-TENANT: GLOBAL QUERY FILTERS
-        // Questo ciclo itera su tutti i tipi entità definiti nel modello
+        // 🛡️ SICUREZZA MULTI-TENANT: GLOBAL QUERY FILTERS (Corretto per la cache di EF Core)
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            // Se il tipo entità eredita da TenantEntity...
             if (typeof(TenantEntity).IsAssignableFrom(entityType.ClrType))
             {
-                // ...applica un filtro globale: mostra solo i record dove il TenantId corrisponde a quello corrente.
-                modelBuilder.Entity(entityType.ClrType)
-                            .HasQueryFilter(ConvertFilterExpression(entityType.ClrType));
+                // Invochiamo il metodo generico ApplyTenantFilter per ogni entità trovata
+                var method = typeof(BasePlateDbContext)
+                    .GetMethod(nameof(ApplyTenantFilter), BindingFlags.NonPublic | BindingFlags.Instance)
+                    ?.MakeGenericMethod(entityType.ClrType);
+
+                method?.Invoke(this, new object[] { modelBuilder });
             }
         }
     }
 
-    // Metodo helper per generare l'espressione lambda corretta per il filtro
-    private LambdaExpression ConvertFilterExpression(Type type)
+    // Metodo helper generico: EF Core capisce questa sintassi e la valuta dinamicamente ad ogni query!
+    private void ApplyTenantFilter<T>(ModelBuilder builder) where T : TenantEntity
     {
-        var param = System.Linq.Expressions.Expression.Parameter(type, "e");
-
-        // e.TenantId
-        var property = System.Linq.Expressions.Expression.Property(param, nameof(TenantEntity.TenantId));
-
-        // _tenantId
-        var tenantValue = System.Linq.Expressions.Expression.Constant(_tenantId);
-
-        // Guid.Empty
-        var emptyValue = System.Linq.Expressions.Expression.Constant(Guid.Empty);
-
-        // Condizione 1: _tenantId == Guid.Empty (Sei il SuperAdmin?)
-        var isSuperAdmin = System.Linq.Expressions.Expression.Equal(tenantValue, emptyValue);
-
-        // Condizione 2: e.TenantId == _tenantId (Sei nel tuo ristorante?)
-        var isTenantMatch = System.Linq.Expressions.Expression.Equal(property, tenantValue);
-
-        // Combiniamo con OR: isSuperAdmin || isTenantMatch
-        var body = System.Linq.Expressions.Expression.OrElse(isSuperAdmin, isTenantMatch);
-
-        return System.Linq.Expressions.Expression.Lambda(body, param);
+        // Se sei SuperAdmin (Guid.Empty) ignora il filtro, altrimenti controlla l'ID del Tenant.
+        builder.Entity<T>().HasQueryFilter(e => _tenantId == Guid.Empty || e.TenantId == _tenantId);
     }
 
-    // Assegnazione automatica del TenantId durante i salvataggi
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
     {
+        // Intercetta tutti i nuovi record in inserimento che ereditano da TenantEntity
         foreach (var entry in ChangeTracker.Entries<TenantEntity>().Where(e => e.State == EntityState.Added))
         {
-            entry.Entity.TenantId = _tenantId;
+            // Sovrascrivi in automatico SOLO se c'è un tenant reale loggato
+            // Questo impedisce che l'utente inserisca un record per un altro ristorante
+            if (_tenantId != Guid.Empty)
+            {
+                entry.Entity.TenantId = _tenantId;
+            }
         }
 
         return base.SaveChangesAsync(cancellationToken);
