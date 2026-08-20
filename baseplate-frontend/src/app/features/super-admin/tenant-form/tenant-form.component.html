@@ -1,0 +1,75 @@
+<div class="form-container">
+  <h2>Aggiungi Nuovo Ristorante</h2>
+  <p>Genera un nuovo ambiente isolato (Tenant) nel database.</p>
+
+  <form [formGroup]="tenantForm" (ngSubmit)="onSubmit()">
+    <!-- NOME RISTORANTE -->
+    <div class="form-group">
+      <label for="nomeRistorante">Nome Ristorante / Ragione Sociale</label>
+      <input
+        id="nomeRistorante"
+        type="text"
+        formControlName="nomeRistorante"
+        placeholder="es. Pizzeria Bella Napoli"
+      />
+
+      <div
+        *ngIf="
+          tenantForm.get('nomeRistorante')?.invalid &&
+          tenantForm.get('nomeRistorante')?.touched
+        "
+        class="error-text"
+      >
+        Il nome è obbligatorio (minimo 3 caratteri).
+      </div>
+    </div>
+
+    <!-- PARTITA IVA -->
+    <div class="form-group">
+      <label for="partitaIva">Partita IVA</label>
+      <input
+        id="partitaIva"
+        type="text"
+        formControlName="partitaIva"
+        placeholder="11 cifre"
+        maxlength="11"
+      />
+
+      <div
+        *ngIf="
+          tenantForm.get('partitaIva')?.invalid &&
+          tenantForm.get('partitaIva')?.touched
+        "
+        class="error-text"
+      >
+        Inserisci una P.IVA valida composta da 11 numeri.
+      </div>
+    </div>
+
+    <!-- EMAIL MANAGER -->
+    <div class="form-group">
+      <label for="emailManager">Email Proprietario / Manager</label>
+      <input
+        id="emailManager"
+        type="email"
+        formControlName="emailManager"
+        placeholder="info@ristorante.it"
+      />
+
+      <div
+        *ngIf="
+          tenantForm.get('emailManager')?.invalid &&
+          tenantForm.get('emailManager')?.touched
+        "
+        class="error-text"
+      >
+        Inserisci una email valida.
+      </div>
+    </div>
+
+    <!-- BOTTONE SUBMIT -->
+    <button type="submit" [disabled]="isSubmitting || tenantForm.invalid">
+      {{ isSubmitting ? "Provisioning in corso..." : "Crea Tenant" }}
+    </button>
+  </form>
+</div>

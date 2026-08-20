@@ -21,6 +21,18 @@ export const routes: Routes = [
     canActivate: [adminGuard], // 👈 IL BUTTAFUORI ENTRA IN AZIONE QUI! Blocca chi non è loggato.
     loadComponent: () => import('./features/admin/dashboard-admin/dashboard-admin.component').then(m => m.DashboardAdminComponent)
   },
+  {
+    path: 'god-mode',
+    // In futuro qui aggiungeremo: canActivate: [superAdminGuard]
+    loadComponent: () => import('./features/super-admin/dashboard/dashboard.component').then(c => c.DashboardComponent),
+    children: [
+      {
+        path: 'nuovo-cliente',
+        loadComponent: () => import('./features/super-admin/tenant-form/tenant-form.component').then(c => c.TenantFormComponent)
+      }
+      // Qui aggiungeremo 'lista-clienti', 'impostazioni-globali', ecc.
+    ]
+  },
 
   // 4. ROTTA SALA (Per i Camerieri)
   {
