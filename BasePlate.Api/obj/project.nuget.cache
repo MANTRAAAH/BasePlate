@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "032f4Y4PiU0=",
+  "dgSpecHash": "U9mpdOJPiSU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\antan\\Desktop\\WebBuilds\\BasePlate\\BasePlate.API\\BasePlate.Api.csproj",
+  "projectFilePath": "C:\\Users\\antan\\Desktop\\WebBuilds\\BasePlate\\BasePlate.Api\\BasePlate.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\antan\\.nuget\\packages\\bcrypt.net-next\\4.2.0\\bcrypt.net-next.4.2.0.nupkg.sha512",
     "C:\\Users\\antan\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

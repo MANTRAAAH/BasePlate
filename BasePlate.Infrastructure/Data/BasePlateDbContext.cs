@@ -16,6 +16,7 @@ public class BasePlateDbContext : DbContext
     }
 
     // --- FASE 1: Master Data ---
+    public DbSet<TenantSettings> TenantSettings { get; set; } = null!;
     public DbSet<Prodotto> Prodotti { get; set; } = null!;
     public DbSet<Categoria> Categorie { get; set; } = null!;
     public DbSet<Ingrediente> Ingredienti { get; set; } = null!;

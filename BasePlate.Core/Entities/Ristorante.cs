@@ -13,4 +13,8 @@ public class Ristorante
     public string TemaLayout { get; set; } = "tema-liquid-glass";
     public string ColorePrimario { get; set; } = "#F59E0B";
     public string LogoUrl { get; set; } = string.Empty;
+
+    // Campi SaaS per il SuperAdmin
+    public DateTime DataCreazione { get; set; } = DateTime.UtcNow;
+    public bool IsActive { get; set; } = true;
 }

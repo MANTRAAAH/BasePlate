@@ -1,4 +1,5 @@
 using BasePlate.Api.Services;
+using Microsoft.OpenApi.Models;
 using BasePlate.Core.Interfaces;
 using BasePlate.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,54 @@ builder.Services.AddDbContext<BasePlateDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 // 🟢 NATIVE .NET 9 OPENAPI (Sostituisce AddSwaggerGen)
-builder.Services.AddOpenApi();
+// 🟢 NATIVE .NET 9 OPENAPI CON SUPPORTO PER JWT E TENANT-ID
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        document.Components ??= new OpenApiComponents();
+
+        // 1. Aggiungiamo il campo per il JWT (Bearer Token)
+        document.Components.SecuritySchemes.Add("Bearer", new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "Inserisci il token JWT generato dal login"
+        });
+
+        // 2. Aggiungiamo il campo per il TenantId
+        document.Components.SecuritySchemes.Add("TenantId", new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.ApiKey,
+            In = ParameterLocation.Header,
+            Name = "X-Tenant-Id",
+            Description = "Inserisci il TenantId"
+        });
+
+        // 3. Applichiamo ENTRAMBI come requisiti globali
+        document.SecurityRequirements.Add(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                },
+                Array.Empty<string>()
+            },
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "TenantId" }
+                },
+                Array.Empty<string>()
+            }
+        });
+
+        return Task.CompletedTask;
+    });
+});
 // ... altri servizi (es. AddControllers, AddDbContext)
 
 // 🔓 Aggiungiamo la policy CORS per Angular
