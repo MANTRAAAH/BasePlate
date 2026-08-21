@@ -1,6 +1,8 @@
+import { TenantListComponent } from './features/super-admin/tenant-list/tenant-list.component';
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard'; // 👈 Importiamo il buttafuori
 import { adminGuard } from './core/guards/admin.guard';
+import { superAdminGuard } from './core/guards/super-admin.guard';
 
 export const routes: Routes = [
   // 1. ROTTA PUBBLICA (Il menù per i clienti)
@@ -23,14 +25,19 @@ export const routes: Routes = [
   },
   {
     path: 'god-mode',
-    // In futuro qui aggiungeremo: canActivate: [superAdminGuard]
+    canActivate:[superAdminGuard],
     loadComponent: () => import('./features/super-admin/dashboard/dashboard.component').then(c => c.DashboardComponent),
     children: [
       {
+        path: 'lista-clienti',
+        loadComponent: () => import('./features/super-admin/tenant-list/tenant-list.component').then(c => c.TenantListComponent)
+      },
+      {
         path: 'nuovo-cliente',
         loadComponent: () => import('./features/super-admin/tenant-form/tenant-form.component').then(c => c.TenantFormComponent)
-      }
-      // Qui aggiungeremo 'lista-clienti', 'impostazioni-globali', ecc.
+      },
+      // Quando visiti /god-mode, ti porta subito sulla lista
+      { path: '', redirectTo: 'lista-clienti', pathMatch: 'full' }
     ]
   },
 

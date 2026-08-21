@@ -1,9 +1,8 @@
 <div class="form-container">
-  <h2>Aggiungi Nuovo Ristorante</h2>
+  <h2>Nuovo Cliente SaaS</h2>
   <p>Genera un nuovo ambiente isolato (Tenant) nel database.</p>
 
   <form [formGroup]="tenantForm" (ngSubmit)="onSubmit()">
-    <!-- NOME RISTORANTE -->
     <div class="form-group">
       <label for="nomeRistorante">Nome Ristorante / Ragione Sociale</label>
       <input
@@ -13,6 +12,7 @@
         placeholder="es. Pizzeria Bella Napoli"
       />
 
+      <!-- Mostriamo l'errore solo se il campo è stato toccato ed è invalido -->
       <div
         *ngIf="
           tenantForm.get('nomeRistorante')?.invalid &&
@@ -24,14 +24,13 @@
       </div>
     </div>
 
-    <!-- PARTITA IVA -->
     <div class="form-group">
       <label for="partitaIva">Partita IVA</label>
       <input
         id="partitaIva"
         type="text"
         formControlName="partitaIva"
-        placeholder="11 cifre"
+        placeholder="11 numeri interi"
         maxlength="11"
       />
 
@@ -42,11 +41,10 @@
         "
         class="error-text"
       >
-        Inserisci una P.IVA valida composta da 11 numeri.
+        Inserisci una P.IVA valida (esattamente 11 numeri).
       </div>
     </div>
 
-    <!-- EMAIL MANAGER -->
     <div class="form-group">
       <label for="emailManager">Email Proprietario / Manager</label>
       <input
@@ -63,13 +61,12 @@
         "
         class="error-text"
       >
-        Inserisci una email valida.
+        Inserisci un indirizzo email valido.
       </div>
     </div>
 
-    <!-- BOTTONE SUBMIT -->
     <button type="submit" [disabled]="isSubmitting || tenantForm.invalid">
-      {{ isSubmitting ? "Provisioning in corso..." : "Crea Tenant" }}
+      {{ isSubmitting ? "Provisioning in corso..." : "Crea Ristorante" }}
     </button>
   </form>
 </div>

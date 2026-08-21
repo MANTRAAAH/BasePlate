@@ -29,7 +29,24 @@ export class SuperAdminService {
       headers: this.godModeHeaders
     });
   }
-
+  // Aggiungi questo metodo sotto provisionTenant()
+  getTenants(): Observable<any[]> {
+    // Usiamo sempre il godModeHeaders per farci riconoscere come SuperAdmin
+    return this.http.get<any[]>(this.apiUrl, {
+      headers: this.godModeHeaders
+    });
+  }
+// Aggiungi questo metodo sotto getTenants()
+  updateTenant(id: string, data: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, data, {
+      headers: this.godModeHeaders
+    });
+  }
+  deleteTenant(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`, {
+      headers: this.godModeHeaders
+    });
+  }
   // Da implementare poi sul backend
   // getTenants(): Observable<any[]> { ... }
 }

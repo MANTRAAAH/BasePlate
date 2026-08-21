@@ -7,7 +7,8 @@ import { SuperAdminService } from '../../../core/services/super-admin.service';
   selector: 'app-tenant-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './tenant-form.component.html'
+  templateUrl: './tenant-form.component.html',
+  styleUrl: './tenant-form.component.scss' // 👈 QUESTA E' LA RIGA MAGICA
 })
 export class TenantFormComponent {
   private fb = inject(FormBuilder);

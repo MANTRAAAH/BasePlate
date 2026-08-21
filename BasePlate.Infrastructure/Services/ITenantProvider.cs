@@ -1,31 +1,42 @@
+using BasePlate.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
-namespace BasePlate.Infrastructure.Services;
+namespace BasePlate.Api.Services; // Controlla che il namespace sia il tuo
 
-public interface ITenantProvider
-{
-    string GetTenantId();
-}
-
-public class HttpContextTenantProvider : ITenantProvider
+public class CurrentTenantProvider : ITenantProvider
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public HttpContextTenantProvider(IHttpContextAccessor httpContextAccessor)
+    public CurrentTenantProvider(IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public string GetTenantId()
+    public Guid GetTenantId()
     {
-        // Intercetta l'header X-Tenant-Id (utile per i test su Postman/Swagger)
-        var tenantId = _httpContextAccessor.HttpContext?.Request.Headers["X-Tenant-Id"].FirstOrDefault();
+        var context = _httpContextAccessor.HttpContext;
+        if (context == null) return Guid.Empty;
 
-        if (string.IsNullOrEmpty(tenantId))
+        // 👑 1. PRIORITÀ ASSOLUTA: L'header manuale (God Mode / Impersonation)
+        if (context.Request.Headers.TryGetValue("X-Tenant-Id", out var headerValue))
         {
-            throw new UnauthorizedAccessException("TenantId mancante. Accesso al Multi-Tenant negato.");
+            if (Guid.TryParse(headerValue, out var tenantId))
+            {
+                // TODO in produzione: Qui andrebbe aggiunto un controllo di sicurezza
+                // per accettare l'header SOLO se l'utente attuale ha il ruolo "SuperAdmin".
+                return tenantId;
+            }
         }
 
-        return tenantId;
+        // 🍕 2. FALLBACK NORMALE: Leggiamo il claim dal token JWT (Camerieri e Manager)
+        var claim = context.User?.FindFirst("tenantId")?.Value;
+        if (!string.IsNullOrEmpty(claim) && Guid.TryParse(claim, out var jwtTenantId))
+        {
+            return jwtTenantId;
+        }
+
+        // 3. Nessun tenant trovato (es. chiamata anonima)
+        return Guid.Empty;
     }
 }

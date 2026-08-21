@@ -3,10 +3,11 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { provideHttpClient,withInterceptors } from '@angular/common/http'; // 👈 1. Importalo qui
+import { tenantInterceptor } from './core/interceptors/tenant.interceptor'; // 👈 IMPORTA IL TUO INTERCEPTOR
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-provideHttpClient(withInterceptors([authInterceptor])) // 👈 2. Aggiungilo nei providers
+provideHttpClient(withInterceptors([authInterceptor,tenantInterceptor])) // 👈 2. Aggiungilo nei providers
   ]
 };

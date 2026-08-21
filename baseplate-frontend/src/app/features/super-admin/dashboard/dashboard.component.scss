@@ -1,0 +1,92 @@
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  background-color: #1a1a1a;
+  color: #fff;
+  margin: 0; // Azzera i margini del body se non l'hai fatto altrove
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #111;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #333;
+
+  .sidebar-header {
+    padding: 25px 20px;
+    border-bottom: 1px solid #333;
+    h2 {
+      margin: 0;
+      color: #F59E0B;
+      font-size: 1.4rem;
+    }
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+
+    .nav-item {
+      padding: 15px 25px;
+      color: #aaa;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s ease-in-out;
+      border-left: 4px solid transparent;
+
+      &:hover {
+        background-color: #222;
+        color: #fff;
+      }
+
+      // Classe applicata in automatico da Angular quando il link è attivo
+      &.active-link {
+        background-color: #242424;
+        color: #F59E0B;
+        border-left-color: #F59E0B;
+      }
+    }
+  }
+}
+
+.main-content {
+  flex: 1; // Prende tutto lo spazio rimanente
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; // Scrolla solo il contenuto, la sidebar resta fissa
+
+  .topbar {
+    background-color: #242424;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: flex-end;
+    border-bottom: 1px solid #333;
+    font-size: 0.9rem;
+    color: #ccc;
+  }
+
+  .content-area {
+    padding: 30px;
+    flex: 1;
+  }
+  .btn-impersona {
+    padding: 6px 12px;
+    background-color: #3b82f6; /* Un bel blu per distinguerlo */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    &:hover {
+      background-color: #2563eb;
+    }
+  }
+}

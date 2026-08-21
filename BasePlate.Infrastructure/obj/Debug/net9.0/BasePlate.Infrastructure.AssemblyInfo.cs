@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BasePlate.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f290878c6af1523ed3c9c0ae536f0cad80462eb1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0cd993e72e6810295049ca3d617a0cce0b0cee34")]
 [assembly: System.Reflection.AssemblyProductAttribute("BasePlate.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BasePlate.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

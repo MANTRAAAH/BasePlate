@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BasePlate.Api.Controllers;
 
-[Authorize(Roles = "Admin")] // 👈 IL LUCCHETTO PRINCIPALE RESTA
+[Authorize(Roles = "Admin")]
 [ApiController]
 [Route("api/[controller]")]
 public class AllergeniController : ControllerBase
@@ -16,11 +16,11 @@ public class AllergeniController : ControllerBase
     public AllergeniController(BasePlateDbContext context) => _context = context;
 
     // ==========================================
-    // GET: api/ingredienti (PUBBLICO - Vetrina)
+    // GET: api/allergeni (PUBBLICO - Vetrina)
     // ==========================================
-    [AllowAnonymous] // 👈 SBLOCCO CHIRURGICO PER IL PUBBLICO
+    [AllowAnonymous]
     [HttpGet]
-    public async Task<IActionResult> Get() => Ok(await _context.Ingredienti.ToListAsync());
+    public async Task<IActionResult> Get() => Ok(await _context.Allergeni.ToListAsync());
 
     // ==========================================
     // METODI POST, PUT, DELETE (PROTETTI - Solo Admin)
@@ -28,8 +28,9 @@ public class AllergeniController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] LookupDto request)
     {
-        var entity = new Ingrediente { Nome = request.Nome };
-        _context.Ingredienti.Add(entity);
+        // 🟢 FIX: Ora creiamo un Allergene, non un Ingrediente
+        var entity = new Allergene { Nome = request.Nome };
+        _context.Allergeni.Add(entity);
         await _context.SaveChangesAsync();
         return Ok(entity);
     }
@@ -37,7 +38,7 @@ public class AllergeniController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, [FromBody] LookupDto request)
     {
-        var entity = await _context.Ingredienti.FindAsync(id);
+        var entity = await _context.Allergeni.FindAsync(id);
         if (entity == null) return NotFound();
         entity.Nome = request.Nome;
         await _context.SaveChangesAsync();
@@ -47,9 +48,11 @@ public class AllergeniController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var entity = await _context.Ingredienti.FindAsync(id);
+        var entity = await _context.Allergeni.FindAsync(id);
         if (entity == null) return NotFound();
-        _context.Ingredienti.Remove(entity);
+
+        // 🟢 FIX: Ora lo rimuoviamo dalla tabella corretta
+        _context.Allergeni.Remove(entity);
         await _context.SaveChangesAsync();
         return Ok();
     }
