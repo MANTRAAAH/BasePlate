@@ -71,7 +71,7 @@ Il cuore pulsante del database del ristorante.
     
 *   **Schema.org e JSON-LD Dinamico:** Iniezione profonda di microdati. Prodotti e recensioni diventano entità scansionabili nativamente da Google.
     
-*   **Smart Wishlist & Carrello Ibrido:** Acquisizione ordini via QR code posizionale (es. ?tavolo=12) per self-ordering.
+*   **Active Call Staff:** Sistema di notifiche push per la chiamata al tavolo (da tenere in cantiere per le evoluzioni future).
     
 
 ### 4\. Operatività di Sala & KDS (Angular PWA) ⚪ _(Fase 4 - Da Iniziare)_
