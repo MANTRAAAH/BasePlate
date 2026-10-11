@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>BasePlate SaaS - Report di Avanzamento Progetto</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm 15mm;
+    }
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      color: #1e293b;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+      line-height: 1.5;
+      font-size: 13px;
+    }
+    .header {
+      border-bottom: 2px solid #f59e0b;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .logo-title h1 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #0f172a;
+    }
+    .logo-title h1 span {
+      color: #f59e0b;
+    }
+    .logo-title p {
+      margin: 4px 0 0 0;
+      font-size: 13px;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .header-meta {
+      text-align: right;
+      font-size: 11px;
+      color: #64748b;
+    }
+    .header-meta strong {
+      color: #0f172a;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-success { background: #dcfce7; color: #15803d; }
+    .badge-warning { background: #fef3c7; color: #b45309; }
+    .badge-info { background: #e0f2fe; color: #0369a1; }
+    .badge-neutral { background: #f1f5f9; color: #475569; }
+
+    h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0f172a;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .card h3 {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .card p {
+      margin: 0;
+      font-size: 12px;
+      color: #475569;
+    }
+    .progress-bar-bg {
+      background: #e2e8f0;
+      height: 6px;
+      border-radius: 9999px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 9999px;
+    }
+    .bg-green { background: #10b981; }
+    .bg-amber { background: #f59e0b; }
+    .bg-blue { background: #3b82f6; }
+    .bg-gray { background: #94a3b8; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 12px;
+    }
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    th {
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    tr:nth-child(even) td {
+      background: #fafafa;
+    }
+    .task-done {
+      color: #15803d;
+      font-weight: 600;
+    }
+    .task-prog {
+      color: #b45309;
+      font-weight: 600;
+    }
+    .task-todo {
+      color: #64748b;
+    }
+    .highlight-box {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      padding: 12px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 16px 0;
+      font-size: 12px;
+      color: #78350f;
+    }
+    .highlight-box strong {
+      color: #92400e;
+    }
+    .tech-stack-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .tech-pill {
+      background: #e2e8f0;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+    .footer {
+      margin-top: 30px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-title">
+      <h1>Base<span>Plate</span> SaaS</h1>
+      <p>Report Tecnico & Stato Avanzamento Architettura</p>
+    </div>
+    <div class="header-meta">
+      <div>Data Report: <strong>11 Ottobre 2026</strong></div>
+      <div>Stato Complessivo: <span class="badge badge-success">Attivo & Stabile</span></div>
+      <div>Ambiente: <strong>Development (Localhost)</strong></div>
+    </div>
+  </div>
+
+  <!-- PANORAMICA STATO -->
+  <h2>📊 Panoramica di Avanzamento per Fasi</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>🟢 FASE 1: Multi-Tenant Architecture <span class="badge badge-success">100%</span></h3>
+      <p>PostgreSQL con isolamento dati a livello EF Core (IMustHaveTenant), JWT con TenantId e RBAC.</p>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-green" style="width: 100%;"></div></div>
+    </div>
+
+    <div class="card">
+      <h3>🟡 FASE 2: SuperAdmin & God Mode <span class="badge badge-warning">95%</span></h3>
+      <p>Dashboard telemetria, cancellazione a cascata, Wizard a 3 step atomico e Impersonation Banner.</p>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-amber" style="width: 95%;"></div></div>
+    </div>
+
+    <div class="card">
+      <h3>🟡 FASE 3: Master Data Management PIM <span class="badge badge-warning">75%</span></h3>
+      <p>CRUD menù, gestione categorie/ingredienti, varianti e modificatori. In corso: motore allergeni.</p>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-amber" style="width: 75%;"></div></div>
+    </div>
+
+    <div class="card">
+      <h3>⚪ FASE 4 & 5: Vetrina Astro & Hardware <span class="badge badge-neutral">10%</span></h3>
+      <p>Preview menu completata. Da sviluppare: Vetrina SSG Astro, KDS/Sala PWA e demone stampa .NET 9.</p>
+      <div class="progress-bar-bg"><div class="progress-bar-fill bg-gray" style="width: 10%;"></div></div>
+    </div>
+  </div>
+
+  <!-- FOCUS PROGRESSO RECENTE -->
+  <h2>⚡ Risultati dell'Ultima Sessione (Completati Oggi)</h2>
+  <div class="highlight-box">
+    <strong>Successo E2E:</strong> Il sistema dispone ora di onboarding completo a 3 step con creazione atomica dell'utente manager (hash BCrypt), layout SuperAdmin in stile SaaS moderno e banner reattivo globale per l'impersonation.
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">Area</th>
+        <th style="width: 45%;">Funzionalità Implementata</th>
+        <th style="width: 15%;">Stato</th>
+        <th style="width: 15%;">Ambiente</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>UI SuperAdmin</strong></td>
+        <td>Restyling dark moderno della dashboard (stile Linear/Vercel) con telemetria e profilo</td>
+        <td><span class="task-done">✓ Completato</span></td>
+        <td>Angular 18</td>
+      </tr>
+      <tr>
+        <td><strong>Onboarding Wizard</strong></td>
+        <td>Wizard reattivo a 3 step: Brand & Sede, Accesso Root e Moduli SaaS</td>
+        <td><span class="task-done">✓ Completato</span></td>
+        <td>Frontend</td>
+      </tr>
+      <tr>
+        <td><strong>Provisioning Atomico</strong></td>
+        <td>Endpoint <code>/provision</code> transazionale con BeginTransactionAsync e rollback automatico</td>
+        <td><span class="task-done">✓ Completato</span></td>
+        <td>.NET 9 API</td>
+      </tr>
+      <tr>
+        <td><strong>Root User Generation</strong></td>
+        <td>Creazione automatica del manager ristorante con hash password BCrypt al provisioning</td>
+        <td><span class="task-done">✓ Completato</span></td>
+        <td>PostgreSQL</td>
+      </tr>
+      <tr>
+        <td><strong>Impersonation Banner</strong></td>
+        <td>Banner sticky globale ambra con Signals reattivi e tasto "Esci & Torna a God Mode"</td>
+        <td><span class="task-done">✓ Completato</span></td>
+        <td>Angular Core</td>
+      </tr>
+      <tr>
+        <td><strong>Autenticazione</strong></td>
+        <td>Supporto sia per username semplici (<code>admin</code>) che email, con seed account di test</td>
+        <td><span class="task-done">✓ Completato</span></td>
+        <td>Auth Service</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- STATO DEI SERVIZI -->
+  <h2>🔌 Stato Attuale dei Servizi e Ambiente Locale</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Servizio</th>
+        <th>Indirizzo / Porta</th>
+        <th>Tecnologia</th>
+        <th>Stato</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Database Relazionale</strong></td>
+        <td><code>localhost:5432</code></td>
+        <td>PostgreSQL 15 Alpine (Docker: <code>baseplate_pg</code>)</td>
+        <td><span class="task-done">● In Esecuzione</span></td>
+      </tr>
+      <tr>
+        <td><strong>Backend Web API</strong></td>
+        <td><code>http://localhost:5147</code></td>
+        <td>ASP.NET Core (.NET 9) + EF Core Multi-Tenant</td>
+        <td><span class="task-done">● In Esecuzione</span></td>
+      </tr>
+      <tr>
+        <td><strong>Frontend SPA</strong></td>
+        <td><code>http://localhost:4200</code></td>
+        <td>Angular 18 + Tailwind CSS + SCSS Modules</td>
+        <td><span class="task-done">● In Esecuzione</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ROADMAP E PROSSIMI PASSI -->
+  <h2>🎯 Prossimi Passi Consigliati</h2>
+  <div class="card" style="margin-bottom: 12px;">
+    <h3 style="margin-bottom: 4px;">1. Separazione Rigorosa dei Ruoli (SuperAdmin vs Admin)</h3>
+    <p>Distinguere a livello di Guard e JWT il ruolo del SuperAdmin piattaforma (<code>SuperAdmin</code>) da quello del titolare del ristorante (<code>Admin</code>) per blindare la rotta <code>/god-mode</code>.</p>
+  </div>
+  <div class="card" style="margin-bottom: 12px;">
+    <h3 style="margin-bottom: 4px;">2. Motore Propagativo Allergeni & Import CSV Menù (Fase 3 - MDM)</h3>
+    <p><strong>Allergeni:</strong> Implementazione di un Domain Event in EF Core per il ricalcolo automatico dei tag allergeni sui prodotti.<br/>
+    <strong>Importazione CSV:</strong> Parser backend e componente Drag & Drop per importare l'intero listino (Categoria, Piatto, Prezzo, Ingredienti, Allergeni) da file CSV/Excel per abbattere a zero i tempi di onboarding.</p>
+  </div>
+  <div class="card" style="margin-bottom: 12px;">
+    <h3 style="margin-bottom: 4px;">3. Soft Delete Globale (IsArchived)</h3>
+    <p>Estensione del filtro globale EF Core (<code>IMustHaveTenant</code>) con <code>ISoftDeletable</code> per preservare lo storico scontrini ed evitare cancellazioni fisiche accidentali.</p>
+  </div>
+
+  <!-- STACK TECNOLOGICO -->
+  <h2>🛠️ Stack Tecnologico Convalidato</h2>
+  <div class="tech-stack-list">
+    <span class="tech-pill">.NET 9 C#</span>
+    <span class="tech-pill">Entity Framework Core</span>
+    <span class="tech-pill">PostgreSQL 15</span>
+    <span class="tech-pill">Docker & Compose</span>
+    <span class="tech-pill">Angular 18 Standalone</span>
+    <span class="tech-pill">Tailwind CSS 3.4</span>
+    <span class="tech-pill">BCrypt.Net</span>
+    <span class="tech-pill">JWT Bearer Auth</span>
+    <span class="tech-pill">Angular Signals</span>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>BasePlate SaaS Engineering — Architettura Multi-Tenant</span>
+    <span>Documento generato automaticamente</span>
+  </div>
+
+</body>
+</html>
+

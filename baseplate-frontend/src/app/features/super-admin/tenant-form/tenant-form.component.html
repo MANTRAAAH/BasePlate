@@ -1,72 +1,393 @@
-<div class="form-container">
-  <h2>Nuovo Cliente SaaS</h2>
-  <p>Genera un nuovo ambiente isolato (Tenant) nel database.</p>
+<div class="wizard-container">
+  <!-- WIZARD HEADER -->
+  <div class="wizard-header">
+    <div class="header-badge">
+      <span class="badge-icon">⚡</span>
+      <span>ONBOARDING ONE-CLICK</span>
+    </div>
+    <h2>Provisioning Nuovo Ristorante</h2>
+    <p>Configura l'istanza multi-tenant isolata, assegna le impostazioni e crea l'utente root.</p>
+  </div>
 
-  <form [formGroup]="tenantForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="nomeRistorante">Nome Ristorante / Ragione Sociale</label>
-      <input
-        id="nomeRistorante"
-        type="text"
-        formControlName="nomeRistorante"
-        placeholder="es. Pizzeria Bella Napoli"
-      />
-
-      <!-- Mostriamo l'errore solo se il campo è stato toccato ed è invalido -->
-      <div
-        *ngIf="
-          tenantForm.get('nomeRistorante')?.invalid &&
-          tenantForm.get('nomeRistorante')?.touched
-        "
-        class="error-text"
-      >
-        Il nome è obbligatorio (minimo 3 caratteri).
+  <!-- STEP TRACKER -->
+  <div class="stepper" *ngIf="currentStep() <= 3">
+    <div
+      class="step-item"
+      [class.active]="currentStep() === 1"
+      [class.completed]="currentStep() > 1"
+      (click)="goToStep(1)"
+    >
+      <div class="step-circle">
+        <span *ngIf="currentStep() <= 1">1</span>
+        <span *ngIf="currentStep() > 1">✓</span>
+      </div>
+      <div class="step-meta">
+        <span class="step-title">Brand & Sede</span>
+        <span class="step-subtitle">Identità ristorante</span>
       </div>
     </div>
 
-    <div class="form-group">
-      <label for="partitaIva">Partita IVA</label>
-      <input
-        id="partitaIva"
-        type="text"
-        formControlName="partitaIva"
-        placeholder="11 numeri interi"
-        maxlength="11"
-      />
+    <div class="step-line" [class.active]="currentStep() >= 2"></div>
 
-      <div
-        *ngIf="
-          tenantForm.get('partitaIva')?.invalid &&
-          tenantForm.get('partitaIva')?.touched
-        "
-        class="error-text"
-      >
-        Inserisci una P.IVA valida (esattamente 11 numeri).
+    <div
+      class="step-item"
+      [class.active]="currentStep() === 2"
+      [class.completed]="currentStep() > 2"
+      (click)="goToStep(2)"
+    >
+      <div class="step-circle">
+        <span *ngIf="currentStep() <= 2">2</span>
+        <span *ngIf="currentStep() > 2">✓</span>
+      </div>
+      <div class="step-meta">
+        <span class="step-title">Accesso Root</span>
+        <span class="step-subtitle">Credenziali manager</span>
       </div>
     </div>
 
-    <div class="form-group">
-      <label for="emailManager">Email Proprietario / Manager</label>
-      <input
-        id="emailManager"
-        type="email"
-        formControlName="emailManager"
-        placeholder="info@ristorante.it"
-      />
+    <div class="step-line" [class.active]="currentStep() >= 3"></div>
 
-      <div
-        *ngIf="
-          tenantForm.get('emailManager')?.invalid &&
-          tenantForm.get('emailManager')?.touched
-        "
-        class="error-text"
-      >
-        Inserisci un indirizzo email valido.
+    <div
+      class="step-item"
+      [class.active]="currentStep() === 3"
+      (click)="goToStep(3)"
+    >
+      <div class="step-circle">3</div>
+      <div class="step-meta">
+        <span class="step-title">Moduli & Conferma</span>
+        <span class="step-subtitle">Impostazioni SaaS</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ERROR ALERT BANNER -->
+  <div class="alert-error" *ngIf="errorMessage()">
+    <span class="alert-icon">⚠️</span>
+    <span class="alert-text">{{ errorMessage() }}</span>
+  </div>
+
+  <!-- FORM BODY (STEPS 1-3) -->
+  <form [formGroup]="tenantForm" (ngSubmit)="onSubmit()" *ngIf="currentStep() <= 3">
+    
+    <!-- =======================================================================
+         STEP 1: IDENTITÀ & BRAND
+         ======================================================================= -->
+    <div class="step-content" *ngIf="currentStep() === 1">
+      <div class="step-pane-header">
+        <h3>Identità Ristorante e Brand</h3>
+        <p>I dettagli fondamentali che identificano l'attività commerciale e il tema visuale.</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label for="nomeRistorante">Ragione Sociale / Nome Locale *</label>
+          <input
+            id="nomeRistorante"
+            type="text"
+            formControlName="nomeRistorante"
+            placeholder="es. Pizzeria Bella Napoli"
+          />
+          <div
+            *ngIf="tenantForm.get('nomeRistorante')?.invalid && tenantForm.get('nomeRistorante')?.touched"
+            class="error-text"
+          >
+            Il nome del locale è obbligatorio (minimo 3 caratteri).
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="partitaIva">Partita IVA (11 cifre) *</label>
+          <input
+            id="partitaIva"
+            type="text"
+            formControlName="partitaIva"
+            placeholder="es. 12345678901"
+            maxlength="11"
+          />
+          <div
+            *ngIf="tenantForm.get('partitaIva')?.invalid && tenantForm.get('partitaIva')?.touched"
+            class="error-text"
+          >
+            Inserisci una P.IVA italiana valida (esattamente 11 cifre numeriche).
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="dominioPersonalizzato">Sottodominio o Dominio Custom</label>
+          <div class="input-suffix-wrapper">
+            <input
+              id="dominioPersonalizzato"
+              type="text"
+              formControlName="dominioPersonalizzato"
+              placeholder="bellanapoli"
+            />
+            <span class="suffix-text">.baseplate.app</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Selezione Colore Primario -->
+      <div class="form-group mt-4">
+        <label>Colore Primario del Brand</label>
+        <div class="color-picker-grid">
+          <button
+            type="button"
+            *ngFor="let c of colorPresets"
+            class="color-btn"
+            [class.selected]="tenantForm.get('colorePrimario')?.value === c.hex"
+            (click)="selectColor(c.hex)"
+          >
+            <span class="color-dot" [style.backgroundColor]="c.hex"></span>
+            <span class="color-name">{{ c.name }}</span>
+            <span *ngIf="tenantForm.get('colorePrimario')?.value === c.hex" class="check-icon">✓</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Selezione Tema Layout -->
+      <div class="form-group mt-4">
+        <label>Tema Grafico Vetrina</label>
+        <div class="theme-cards-grid">
+          <div
+            *ngFor="let t of layoutThemes"
+            class="theme-card"
+            [class.selected]="tenantForm.get('temaLayout')?.value === t.id"
+            (click)="selectTheme(t.id)"
+          >
+            <div class="theme-card-header">
+              <span class="theme-name">{{ t.name }}</span>
+              <span *ngIf="tenantForm.get('temaLayout')?.value === t.id" class="badge-selected">Attivo</span>
+            </div>
+            <p class="theme-desc">{{ t.desc }}</p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <button type="submit" [disabled]="isSubmitting || tenantForm.invalid">
-      {{ isSubmitting ? "Provisioning in corso..." : "Crea Ristorante" }}
-    </button>
+    <!-- =======================================================================
+         STEP 2: ACCESSO ROOT / MANAGER
+         ======================================================================= -->
+    <div class="step-content" *ngIf="currentStep() === 2">
+      <div class="step-pane-header">
+        <h3>Credenziali Amministratore (Root User)</h3>
+        <p>Verrà creato un utente con ruolo Admin collegato a questo TenantId in modo atomico.</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label for="nomeManager">Nome e Cognome Titolare *</label>
+          <input
+            id="nomeManager"
+            type="text"
+            formControlName="nomeManager"
+            placeholder="es. Mario Rossi"
+          />
+          <div
+            *ngIf="tenantForm.get('nomeManager')?.invalid && tenantForm.get('nomeManager')?.touched"
+            class="error-text"
+          >
+            Il nome del titolare è obbligatorio.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="emailManager">Email Principale di Accesso *</label>
+          <input
+            id="emailManager"
+            type="email"
+            formControlName="emailManager"
+            placeholder="titolare@bellanapoli.it"
+          />
+          <div
+            *ngIf="tenantForm.get('emailManager')?.invalid && tenantForm.get('emailManager')?.touched"
+            class="error-text"
+          >
+            Inserisci un indirizzo email valido.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="passwordManager">Password Temporanea *</label>
+          <input
+            id="passwordManager"
+            type="text"
+            formControlName="passwordManager"
+            placeholder="Minimo 6 caratteri"
+          />
+          <div
+            *ngIf="tenantForm.get('passwordManager')?.invalid && tenantForm.get('passwordManager')?.touched"
+            class="error-text"
+          >
+            La password deve contenere almeno 6 caratteri.
+          </div>
+        </div>
+      </div>
+
+      <div class="info-callout mt-4">
+        <span class="callout-icon">💡</span>
+        <div class="callout-body">
+          <strong>Sicurezza Crittografica:</strong> La password verrà crittografata con BCrypt prima del salvataggio nel database. Il titolare potrà poi modificarla autonomamente.
+        </div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         STEP 3: MODULI SAAS & CONFERMA
+         ======================================================================= -->
+    <div class="step-content" *ngIf="currentStep() === 3">
+      <div class="step-pane-header">
+        <h3>Moduli SaaS & Revisione Finale</h3>
+        <p>Verifica i parametri prima di inizializzare l'istanza isolata del database.</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <div class="checkbox-container">
+            <input
+              id="isCoverChargeEnabled"
+              type="checkbox"
+              formControlName="isCoverChargeEnabled"
+            />
+            <label for="isCoverChargeEnabled" class="checkbox-label">
+              <span class="checkbox-title">Abilita Calcolo Coperto Automatico</span>
+              <span class="checkbox-subtitle">Aggiunge automaticamente la quota coperto a ogni conto di sala.</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="tenantForm.get('isCoverChargeEnabled')?.value">
+          <label for="coverChargePrice">Prezzo Coperto Default (€)</label>
+          <input
+            id="coverChargePrice"
+            type="number"
+            step="0.50"
+            formControlName="coverChargePrice"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="timezone">Fuso Orario Cassa & Fiscale</label>
+          <select id="timezone" formControlName="timezone">
+            <option value="Europe/Rome">Europe/Rome (Italia, CET/CEST)</option>
+            <option value="Europe/London">Europe/London (GMT/BST)</option>
+            <option value="America/New_York">America/New_York (EST/EDT)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- CARD RIEPILOGATIVA -->
+      <div class="summary-card mt-6">
+        <div class="summary-card-header">
+          <span class="summary-tag">Riepilogo Provisioning</span>
+          <div
+            class="color-pill"
+            [style.backgroundColor]="tenantForm.get('colorePrimario')?.value"
+          >
+            Brand Color
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <div class="summary-col">
+            <span class="summary-label">Ristorante</span>
+            <span class="summary-value">{{ tenantForm.get('nomeRistorante')?.value || '—' }}</span>
+          </div>
+
+          <div class="summary-col">
+            <span class="summary-label">Partita IVA</span>
+            <span class="summary-value">{{ tenantForm.get('partitaIva')?.value || '—' }}</span>
+          </div>
+
+          <div class="summary-col">
+            <span class="summary-label">Manager</span>
+            <span class="summary-value">{{ tenantForm.get('nomeManager')?.value || '—' }} ({{ tenantForm.get('emailManager')?.value }})</span>
+          </div>
+
+          <div class="summary-col">
+            <span class="summary-label">Coperto</span>
+            <span class="summary-value">
+              {{ tenantForm.get('isCoverChargeEnabled')?.value ? (tenantForm.get('coverChargePrice')?.value | currency:'EUR':'symbol':'1.2-2') : 'Disabilitato' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WIZARD CONTROLS / BUTTONS -->
+    <div class="wizard-actions">
+      <button
+        type="button"
+        class="btn-secondary"
+        *ngIf="currentStep() > 1"
+        (click)="prevStep()"
+      >
+        ← Indietro
+      </button>
+
+      <div class="spacer"></div>
+
+      <button
+        type="button"
+        class="btn-primary"
+        *ngIf="currentStep() === 1"
+        [disabled]="!isStep1Valid()"
+        (click)="nextStep()"
+      >
+        Continua a Credenziali →
+      </button>
+
+      <button
+        type="button"
+        class="btn-primary"
+        *ngIf="currentStep() === 2"
+        [disabled]="!isStep2Valid()"
+        (click)="nextStep()"
+      >
+        Continua a Moduli →
+      </button>
+
+      <button
+        type="submit"
+        class="btn-submit"
+        *ngIf="currentStep() === 3"
+        [disabled]="isSubmitting() || tenantForm.invalid"
+      >
+        <span *ngIf="!isSubmitting()">🚀 Lancia Provisioning</span>
+        <span *ngIf="isSubmitting()">Inizializzazione in corso...</span>
+      </button>
+    </div>
   </form>
+
+  <!-- =======================================================================
+       STEP 4: SUCCESSO & CONFERMA PROVISIONING
+       ======================================================================= -->
+  <div class="success-screen" *ngIf="currentStep() === 4">
+    <div class="success-icon-badge">🎉</div>
+    <h2>Ambiente Creato con Successo!</h2>
+    <p>Il tenant è stato registrato nelle tabelle master ed è pronto per l'accesso.</p>
+
+    <div class="result-box">
+      <div class="result-row">
+        <span class="result-key">Nome Ristorante</span>
+        <span class="result-val font-bold">{{ provisionResult()?.nome }}</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">Tenant GUID</span>
+        <span class="result-val font-mono">{{ provisionResult()?.tenantId }}</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">Account Manager</span>
+        <span class="result-val">{{ provisionResult()?.emailManager }}</span>
+      </div>
+    </div>
+
+    <div class="success-actions">
+      <button class="btn-primary" (click)="vaiAllaLista()">
+        📋 Vai alla Lista Clienti
+      </button>
+      <button class="btn-secondary" (click)="creaAltro()">
+        ➕ Crea un Altro Tenant
+      </button>
+    </div>
+  </div>
 </div>

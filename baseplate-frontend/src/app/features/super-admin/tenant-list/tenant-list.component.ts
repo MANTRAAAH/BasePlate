@@ -1,19 +1,21 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; // 👈 INIETTA IL ROUTER
+import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { SuperAdminService } from '../../../core/services/super-admin.service';
+import { ImpersonationService } from '../../../core/services/impersonation.service';
 
 @Component({
   selector: 'app-tenant-list',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './tenant-list.component.html',
   styleUrl: './tenant-list.component.scss'
 })
 export class TenantListComponent implements OnInit {
   private superAdminService = inject(SuperAdminService);
-  private router = inject(Router); // 👈 AGGIUNGI QUESTO
+  private impersonationService = inject(ImpersonationService);
+  private router = inject(Router);
 
   tenants: any[] = [];
   isLoading = true;
@@ -52,18 +54,9 @@ export class TenantListComponent implements OnInit {
     });
   }
 
-  // 👑 IL METODO MAGICO PER L'IMPERSONATION
+  // 👑 IL METODO MAGICO PER L'IMPERSONATION CON IL BANNER REATTIVO
   entraComeCliente(tenant: any) {
-    // 1. Salviamo l'ID e il nome nel Local Storage del browser
-    localStorage.setItem('X-Tenant-Id', tenant.id);
-    localStorage.setItem('Tenant-Name', tenant.nome); // Utile per mostrarlo nella UI
-
-    // 2. Un feedback visivo (poi lo cambieremo con un bel toast)
-    alert(`Sei entrato nell'ambiente di: ${tenant.nome}`);
-
-    // 3. Ti spariamo nella rotta del ristorante (Manager o Cassa)
-    // Sostituisci '/manager' con la rotta che userai per l'app vera e propria
-    this.router.navigate(['/admin']);
+    this.impersonationService.startImpersonation(tenant);
   }
 // ⚙️ RIEMPIAMO IL METODO APRI MODIFICA
   apriModifica(tenant: any) {

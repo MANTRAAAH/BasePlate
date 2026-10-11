@@ -32,7 +32,7 @@ public class AllergeniController : ControllerBase
         var entity = new Allergene { Nome = request.Nome };
         _context.Allergeni.Add(entity);
         await _context.SaveChangesAsync();
-        return Ok(entity);
+        return CreatedAtAction(nameof(Get), new { id = entity.Id }, entity);
     }
 
     [HttpPut("{id}")]
@@ -54,6 +54,6 @@ public class AllergeniController : ControllerBase
         // 🟢 FIX: Ora lo rimuoviamo dalla tabella corretta
         _context.Allergeni.Remove(entity);
         await _context.SaveChangesAsync();
-        return Ok();
+        return NoContent();
     }
 }

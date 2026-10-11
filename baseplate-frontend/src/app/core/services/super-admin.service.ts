@@ -6,7 +6,17 @@ import { environment } from '../../../environments/environment';
 export interface CreateTenantRequest {
   nomeRistorante: string;
   partitaIva: string;
+  dominioPersonalizzato?: string;
+  colorePrimario?: string;
+  temaLayout?: string;
+
+  nomeManager?: string;
   emailManager: string;
+  passwordManager?: string;
+
+  isCoverChargeEnabled?: boolean;
+  coverChargePrice?: number;
+  timezone?: string;
 }
 
 @Injectable({

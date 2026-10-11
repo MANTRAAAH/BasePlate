@@ -1,38 +1,115 @@
 <div class="dashboard-layout">
-  <!-- BARRA LATERALE (SIDEBAR) -->
+  <!-- SIDEBAR LATERALE -->
   <aside class="sidebar">
-    <div class="sidebar-header">
-      <h2>👑 God Mode</h2>
+    <!-- Brand / Logo -->
+    <div class="sidebar-brand">
+      <div class="brand-icon-wrapper">
+        <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title">BasePlate</div>
+        <div class="brand-badge">
+          <span class="badge-dot"></span>
+          GOD MODE
+        </div>
+      </div>
     </div>
 
+    <!-- Navigation Menu -->
     <nav class="sidebar-nav">
-      <!-- routerLinkActive applica la classe 'active-link' quando sei su quella pagina -->
+      <div class="nav-section-title">GESTIONE CLIENTI</div>
+
       <a
         routerLink="/god-mode/lista-clienti"
         routerLinkActive="active-link"
         class="nav-item"
       >
-        📋 Lista Clienti
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="3" width="20" height="14" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="8" y1="21" x2="16" y2="21" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="12" y1="17" x2="12" y2="21" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Lista Clienti</span>
+        <span class="nav-pill">Live</span>
       </a>
+
       <a
         routerLink="/god-mode/nuovo-cliente"
         routerLinkActive="active-link"
         class="nav-item"
       >
-        ➕ Nuovo Cliente
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="12" y1="8" x2="12" y2="16" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="8" y1="12" x2="16" y2="12" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Nuovo Cliente</span>
       </a>
+
+      <div class="nav-section-title">INFRASTRUTTURA & SICUREZZA</div>
+
+      <div class="system-status-card">
+        <div class="status-header">
+          <span class="status-indicator-pulse"></span>
+          <span class="status-label">Isolamento Multi-Tenant</span>
+        </div>
+        <p class="status-description">Filtri globali EF Core attivi su tutte le query dei tenant.</p>
+      </div>
     </nav>
+
+    <!-- Sidebar Footer / Admin Profile -->
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="avatar">
+          <span>👑</span>
+        </div>
+        <div class="user-info">
+          <span class="user-name">{{ userName }}</span>
+          <span class="user-role">Super Amministratore</span>
+        </div>
+      </div>
+      <button class="btn-logout" (click)="logout()" title="Disconnetti">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="logout-icon">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="16 17 21 12 16 7" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="21" y1="12" x2="9" y2="12" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
   </aside>
 
   <!-- AREA PRINCIPALE (MAIN CONTENT) -->
   <main class="main-content">
+    <!-- Topbar -->
     <header class="topbar">
-      <span>Dashboard SaaS - BasePlate</span>
+      <div class="topbar-left">
+        <div class="breadcrumb">
+          <span class="breadcrumb-root">BasePlate</span>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-current">Console SuperAdmin</span>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="telemetry-badge">
+          <span class="pulse-dot"></span>
+          <span>SaaS Engine Online</span>
+        </div>
+
+        <div class="env-pill">
+          <span>Ambiente Root</span>
+        </div>
+      </div>
     </header>
 
+    <!-- Content Area -->
     <div class="content-area">
-      <!-- Qui Angular caricherà la lista o il form in base a cosa clicchi a sinistra -->
-      <router-outlet></router-outlet>
+      <div class="content-container">
+        <!-- Angular router-outlet per i componenti figli -->
+        <router-outlet></router-outlet>
+      </div>
     </div>
   </main>
 </div>

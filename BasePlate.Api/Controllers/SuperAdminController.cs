@@ -20,46 +20,79 @@ public class SuperAdminController : ControllerBase
     [HttpPost("provision")]
     public async Task<IActionResult> ProvisionNewTenant([FromBody] CreateTenantRequest request)
     {
-        // 1. Generiamo il nuovo ID univoco per il ristorante (Il TenantId assoluto)
-        var newTenantId = Guid.NewGuid();
-
-        // 2. Creiamo il record anagrafico del ristorante (Tabella Master)
-        // Presupponendo che la tua classe Ristorante abbia queste proprietà base
-        var nuovoRistorante = new Ristorante
+        // 1. Controllo preliminare: l'email del manager deve essere univoca
+        if (!string.IsNullOrWhiteSpace(request.EmailManager) && 
+            await _context.Utenti.AnyAsync(u => u.Email == request.EmailManager))
         {
-            Id = newTenantId,
-            Nome = request.NomeRistorante,
-            PartitaIva = request.PartitaIva,
-            DataCreazione = DateTime.UtcNow,
-            IsActive = true,
-            // Lasciamo i valori di default per il frontend, se non li passiamo nel DTO
-            TemaLayout = "tema-liquid-glass",
-            ColorePrimario = "#F59E0B"
-        };
+            return BadRequest(new { message = $"L'email '{request.EmailManager}' è già registrata nel sistema." });
+        }
 
-        // 3. Creiamo le impostazioni di default per questo ristorante
-        var defaultSettings = new TenantSettings
+        // 2. Transazione atomica per garantire rollback automatico in caso di errore
+        using var transaction = await _context.Database.BeginTransactionAsync();
+
+        try
         {
-            TenantId = newTenantId,
-            IsCoverChargeEnabled = true,
-            CoverChargePrice = 2.00m // Default standard per l'Italia
-        };
+            // 3. Generazione TenantId univoco
+            var newTenantId = Guid.NewGuid();
 
-        // 4. Inseriamo tutto nel DbContext
-        _context.Ristoranti.Add(nuovoRistorante);
-        _context.TenantSettings.Add(defaultSettings);
+            // 4. Creazione Record Ristorante (Master)
+            var nuovoRistorante = new Ristorante
+            {
+                Id = newTenantId,
+                Nome = request.NomeRistorante,
+                PartitaIva = request.PartitaIva,
+                DominioPersonalizzato = request.DominioPersonalizzato,
+                TemaLayout = string.IsNullOrWhiteSpace(request.TemaLayout) ? "tema-liquid-glass" : request.TemaLayout,
+                ColorePrimario = string.IsNullOrWhiteSpace(request.ColorePrimario) ? "#F59E0B" : request.ColorePrimario,
+                DataCreazione = DateTime.UtcNow,
+                IsActive = true
+            };
 
-        // 5. Salviamo su PostgreSQL in un'unica transazione
-        await _context.SaveChangesAsync();
+            // 5. Creazione Impostazioni SaaS (TenantSettings)
+            var defaultSettings = new TenantSettings
+            {
+                TenantId = newTenantId,
+                IsCoverChargeEnabled = request.IsCoverChargeEnabled,
+                CoverChargePrice = request.CoverChargePrice >= 0 ? request.CoverChargePrice : 2.00m,
+                Timezone = string.IsNullOrWhiteSpace(request.Timezone) ? "Europe/Rome" : request.Timezone
+            };
 
-        // 6. Restituiamo il TenantId. Da questo momento in poi, ogni chiamata 
-        // per questo cliente dovrà avere l'header "X-Tenant-Id" impostato con questo Guid.
-        return Ok(new
+            _context.Ristoranti.Add(nuovoRistorante);
+            _context.TenantSettings.Add(defaultSettings);
+
+            // 6. Creazione Utente Root (Manager del locale)
+            if (!string.IsNullOrWhiteSpace(request.EmailManager))
+            {
+                var password = string.IsNullOrWhiteSpace(request.PasswordManager) ? "Admin123!" : request.PasswordManager;
+                var utenteRoot = new Utente
+                {
+                    TenantId = newTenantId,
+                    Nome = string.IsNullOrWhiteSpace(request.NomeManager) ? "Titolare" : request.NomeManager,
+                    Email = request.EmailManager,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+                    Ruolo = "Admin"
+                };
+
+                _context.Utenti.Add(utenteRoot);
+            }
+
+            // 7. Salvataggio atomico su database
+            await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            return Ok(new
+            {
+                Message = "Provisioning completato con successo!",
+                TenantId = newTenantId,
+                Nome = request.NomeRistorante,
+                EmailManager = request.EmailManager
+            });
+        }
+        catch (Exception ex)
         {
-            Message = "Provisioning completato con successo!",
-            TenantId = newTenantId,
-            Nome = request.NomeRistorante
-        });
+            await transaction.RollbackAsync();
+            return StatusCode(500, new { message = "Errore durante il provisioning del tenant", error = ex.Message });
+        }
     }
     [HttpGet]
     public async Task<IActionResult> GetAllTenants()

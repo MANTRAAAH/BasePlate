@@ -27,9 +27,9 @@ import { AuthService } from '../../../core/services/auth.service';
 
           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
             <div>
-              <label class="block text-sm font-medium text-slate-300">Email</label>
+              <label class="block text-sm font-medium text-slate-300">Email o Username</label>
               <div class="mt-1">
-                <input formControlName="email" type="email" class="appearance-none block w-full px-3 py-2 border border-slate-600 rounded-lg shadow-sm placeholder-slate-400 bg-slate-900 text-white focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm">
+                <input formControlName="email" type="text" placeholder="es. admin o info@ristorante.it" class="appearance-none block w-full px-3 py-2 border border-slate-600 rounded-lg shadow-sm placeholder-slate-400 bg-slate-900 text-white focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm">
               </div>
             </div>
 
@@ -63,7 +63,7 @@ export class LoginComponent {
   private router = inject(Router);
 
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required]],
     password: ['', Validators.required]
   });
 
